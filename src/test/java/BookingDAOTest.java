@@ -11,7 +11,7 @@ public class BookingDAOTest {
 
         // 1. Test Add Booking
         System.out.println("Adding a new booking...");
-        Booking newBooking = new Booking(0, "ORD003", 2, "123 Main St to 456 Elm St", LocalDateTime.now(), 2500.00);
+        Booking newBooking = new Booking(101, "ORD004", 3, "123 Main St to 456 Elm St", LocalDateTime.now(), 2500.00);
         bookingDAO.addBooking(newBooking);
         System.out.println("Booking added successfully!");
 
