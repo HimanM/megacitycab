@@ -51,7 +51,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public boolean createAdmin(Admin admin) {
-        String query = "INSERT INTO users (username, password, name, address, nic, phone, role) VALUES (?, HASHBYTES('SHA2_256', ?), ?, ?, ?, ?, 'ADMIN')";
+        String query = "INSERT INTO users (username, password, email, name, address, nic, phone, role) VALUES (?, HASHBYTES('SHA2_256', ?), ?, ?, ?, ?, 'ADMIN')";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, admin.getUsername());
             preparedStatement.setString(2, admin.getPassword());

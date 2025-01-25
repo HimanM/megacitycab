@@ -1,6 +1,7 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.User;
 
 import java.sql.*;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
+    private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
+    private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     @Override
     public User getUserByUsername(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
@@ -46,7 +49,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean addUser(User user) {
-        String query = "INSERT INTO users (username, password, name, address, nic, phone, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (username, password, name, address, nic, phone, role, email) VALUES (?, HASHBYTES('SHA2_256', ?), ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -58,6 +61,7 @@ public class UserDAOImpl implements UserDAO {
             statement.setString(5, user.getNic());
             statement.setString(6, user.getPhone());
             statement.setString(7, user.getRole());
+            statement.setString(8, user.getEmail());
             return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -68,7 +72,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String query = "UPDATE users SET password = ?, name = ?, address = ?, nic = ?, phone = ?, role = ? WHERE id = ?";
+        String query = "UPDATE users SET password = HASHBYTES('SHA2_256', ?), name = ?, address = ?, nic = ?, phone = ?, role = ?, email = ?, WHERE id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -79,7 +83,8 @@ public class UserDAOImpl implements UserDAO {
             statement.setString(4, user.getNic());
             statement.setString(5, user.getPhone());
             statement.setString(6, user.getRole());
-            statement.setInt(7, user.getId());
+            statement.setString(7, user.getEmail());
+            statement.setInt(8, user.getId());
             return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -104,6 +109,42 @@ public class UserDAOImpl implements UserDAO {
         return false;
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+        User user = null;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
+
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = extractUser(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserById(int customerId) {
+        User user = null;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_ID)) {
+
+            statement.setInt(1, customerId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = extractUser(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     private User extractUser(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getInt("id"),
@@ -114,6 +155,7 @@ public class UserDAOImpl implements UserDAO {
                 resultSet.getString("nic"),
                 resultSet.getString("phone"),
                 resultSet.getString("role"),
+                resultSet.getString("email"),
                 resultSet.getTimestamp("created_at").toLocalDateTime()
         );
     }

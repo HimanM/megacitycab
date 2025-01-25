@@ -1,3 +1,4 @@
+package DAOTest;
 
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.UserDAOImpl;
@@ -35,6 +36,7 @@ public class TestDatabase {
                 "john_doe",
                 "password123", // In a real app, hash passwords before saving
                 "John Doe",
+                "john_doe@me.com",
                 "123 Main Street, Colombo",
                 "987654321V",
                 "0779876543",

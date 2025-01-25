@@ -1,5 +1,7 @@
 package com.example.megacitycab.model;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Booking {
     private int id; // Primary Key
@@ -8,6 +10,7 @@ public class Booking {
     private String destinationDetails;
     private LocalDateTime bookingDate;
     private double totalAmount;
+    private String status;
 
     // Constructors
     public Booking() {}
@@ -17,9 +20,11 @@ public class Booking {
         this.orderNumber = orderNumber;
         this.customerId = customerId;
         this.destinationDetails = destinationDetails;
-        this.bookingDate = bookingDate;
+        this.bookingDate =bookingDate;
         this.totalAmount = totalAmount;
+        this.status = "PENDING";
     }
+
 
     // Getters and Setters
     public int getId() {
@@ -68,5 +73,13 @@ public class Booking {
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

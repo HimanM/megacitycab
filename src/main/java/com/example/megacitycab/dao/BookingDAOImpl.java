@@ -6,7 +6,6 @@ import com.example.megacitycab.model.Booking;
 import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BookingDAOImpl implements BookingDAO {
 
@@ -14,7 +13,7 @@ public class BookingDAOImpl implements BookingDAO {
     private static final String SELECT_BOOKING_BY_ID = "SELECT * FROM bookings WHERE id = ?";
     private static final String SELECT_ALL_BOOKINGS = "SELECT * FROM bookings";
     private static final String SELECT_BOOKINGS_BY_CUSTOMER_ID = "SELECT * FROM bookings WHERE customer_id = ?";
-    private static final String UPDATE_BOOKING = "UPDATE bookings SET order_number = ?, customer_id = ?, destination_details = ?, booking_date = ?, total_amount = ? WHERE id = ?";
+    private static final String UPDATE_BOOKING = "UPDATE bookings SET order_number = ?, customer_id = ?, destination_details = ?, booking_date = ?, total_amount = ?,status = ?, WHERE id = ?";
     private static final String DELETE_BOOKING = "DELETE FROM bookings WHERE id = ?";
 
     @Override
@@ -87,7 +86,7 @@ public class BookingDAOImpl implements BookingDAO {
     }
 
     @Override
-    public void updateBooking(Booking booking) {
+    public boolean updateBooking(Booking booking) {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_BOOKING)) {
 
@@ -96,16 +95,18 @@ public class BookingDAOImpl implements BookingDAO {
             statement.setString(3, booking.getDestinationDetails());
             statement.setTimestamp(4, Timestamp.valueOf(booking.getBookingDate()));
             statement.setDouble(5, booking.getTotalAmount());
-            statement.setInt(6, booking.getId());
+            statement.setString(6, booking.getStatus());
+            statement.setInt(7, booking.getId());
 
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
-    public void deleteBooking(int id) {
+    public boolean deleteBooking(int id) {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_BOOKING)) {
 
@@ -114,6 +115,7 @@ public class BookingDAOImpl implements BookingDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private Booking mapRowToBooking(ResultSet resultSet) throws SQLException {

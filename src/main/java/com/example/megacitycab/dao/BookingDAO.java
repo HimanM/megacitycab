@@ -8,6 +8,6 @@ public interface BookingDAO {
     Booking getBookingById(int id); // Read
     List<Booking> getAllBookings(); // Read all
     List<Booking> getBookingsByCustomerId(int customerId); // Read by customer
-    void updateBooking(Booking booking); // Update
-    void deleteBooking(int id); // Delete
+    boolean updateBooking(Booking booking); // Update
+    boolean deleteBooking(int id); // Delete
 }
