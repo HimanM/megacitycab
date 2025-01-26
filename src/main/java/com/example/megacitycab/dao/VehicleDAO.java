@@ -9,5 +9,6 @@ public interface VehicleDAO {
     Vehicle getVehicleById(int id);
     List<Vehicle> getAllVehicles();
     void updateVehicle(Vehicle vehicle);
-    void deleteVehicle(int id);
+    boolean deleteVehicle(int id);
+    List<Vehicle> getVehiclesByDriver(String driver);
 }

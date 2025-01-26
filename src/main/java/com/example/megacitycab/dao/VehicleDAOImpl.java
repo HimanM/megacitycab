@@ -84,16 +84,39 @@ public class VehicleDAOImpl implements VehicleDAO {
     }
 
     @Override
-    public void deleteVehicle(int id) {
+    public boolean deleteVehicle(int id) {
         String query = "DELETE FROM vehicles WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    @Override
+    public List<Vehicle> getVehiclesByDriver(String driver) {
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "SELECT * FROM vehicles WHERE driver_name = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, driver);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                vehicles.add(mapRowToVehicle(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicles;
     }
 
     private Vehicle mapRowToVehicle(ResultSet resultSet) throws SQLException {

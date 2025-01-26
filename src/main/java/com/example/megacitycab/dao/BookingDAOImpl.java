@@ -99,6 +99,7 @@ public class BookingDAOImpl implements BookingDAO {
             statement.setInt(7, booking.getId());
 
             statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -112,6 +113,7 @@ public class BookingDAOImpl implements BookingDAO {
 
             statement.setInt(1, id);
             statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
