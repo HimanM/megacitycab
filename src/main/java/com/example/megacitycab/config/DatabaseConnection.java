@@ -2,6 +2,7 @@ package com.example.megacitycab.config;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Base64;
 
 public class DatabaseConnection {
 
@@ -50,10 +52,5 @@ public class DatabaseConnection {
                 System.out.println("Failed to get connection.");
             }
         }
-    }
-    public static byte[] hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hashBytes = digest.digest(password.getBytes());
-        return hashBytes;
     }
 }

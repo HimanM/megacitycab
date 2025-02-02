@@ -70,11 +70,20 @@ public class VehicleService {
     }
 
     // Get vehicles by type
-    public List<Vehicle> getVehiclesByType(String driver) throws VehicleException {
+    public List<Vehicle> getVehiclesByDriver(String driver) throws VehicleException {
         try {
             return vehicleDAO.getVehiclesByDriver(driver);
         } catch (Exception e) {
             throw new VehicleException("Error while fetching vehicles by type", e);
+        }
+    }
+
+    // Get vehicles by Status
+    public List<Vehicle> getVehiclesByStatus(String status) throws VehicleException {
+        try {
+            return vehicleDAO.getVehiclesByStatus(status);
+        } catch (Exception e) {
+            throw new VehicleException("Error while fetching vehicles by status", e);
         }
     }
 }

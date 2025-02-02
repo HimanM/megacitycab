@@ -10,4 +10,6 @@ public interface BookingDAO {
     List<Booking> getBookingsByCustomerId(int customerId); // Read by customer
     boolean updateBooking(Booking booking); // Update
     boolean deleteBooking(int id); // Delete
+    List<Booking> getPendingBookings();
+    boolean assignDriverToBooking(int bookingId, int driverId);
 }

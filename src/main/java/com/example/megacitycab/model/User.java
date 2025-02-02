@@ -27,6 +27,10 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public User() {
+
+    }
+
     public String getName() {
         return name;
     }

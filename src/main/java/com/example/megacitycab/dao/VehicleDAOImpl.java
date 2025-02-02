@@ -119,6 +119,27 @@ public class VehicleDAOImpl implements VehicleDAO {
         return vehicles;
     }
 
+    @Override
+    public List<Vehicle> getVehiclesByStatus(String status) {
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "SELECT * FROM vehicles WHERE status = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            preparedStatement.setString(1, status);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                vehicles.add(mapRowToVehicle(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicles;
+    }
+
     private Vehicle mapRowToVehicle(ResultSet resultSet) throws SQLException {
         return new Vehicle(
                 resultSet.getInt("id"),

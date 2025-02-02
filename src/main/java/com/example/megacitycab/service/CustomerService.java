@@ -19,7 +19,8 @@ public class CustomerService {
     }
 
     // Register a new customer
-    public void registerCustomer(User customer) throws UserException {
+    public boolean registerCustomer(User customer) throws UserException {
+        boolean b = false;
         try {
             if (customer == null) {
                 throw new UserException("Customer data cannot be null");
@@ -27,11 +28,12 @@ public class CustomerService {
             if (UserDAO.getUserByEmail(customer.getEmail()) != null) {
                 throw new UserException("Email is already registered");
             }
-
             UserDAO.addUser(customer);
+            b = true;
         } catch (Exception e) {
             throw new UserException("Error while registering customer", e);
         }
+        return b;
     }
 
     // Update customer details
@@ -89,5 +91,9 @@ public class CustomerService {
         } catch (Exception e) {
             throw new UserException("Error while deleting customer", e);
         }
+    }
+
+    public boolean isEmailAlreadyRegistered(String email) {
+        return UserDAO.getUserByEmail(email) != null;
     }
 }

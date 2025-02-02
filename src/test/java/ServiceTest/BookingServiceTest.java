@@ -28,7 +28,7 @@ public class BookingServiceTest {
 
     @Test
     void createBooking_Success() throws BookingException {
-        Booking booking = new Booking(1, "2", 3, "Colombo",parseDateTime("2025-01-30 10:00:00"), 2000.00);
+        Booking booking = new Booking(1, "2", 2,3, "Colombo",parseDateTime("2025-01-30 10:00:00"), 2000.00);
 
         doNothing().when(bookingDAOMock).addBooking(booking);
 
@@ -44,7 +44,7 @@ public class BookingServiceTest {
 
     @Test
     void updateBooking_Success() throws BookingException {
-        Booking updatedBooking = new Booking(6, "2", 3, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00);
+        Booking updatedBooking = new Booking(6, "2", 3,2, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00);
 
         doNothing().when(bookingDAOMock).updateBooking(updatedBooking);
 
@@ -60,7 +60,7 @@ public class BookingServiceTest {
 
     @Test
     void getBookingById_Success() throws BookingException {
-        Booking booking = new Booking(2, "2", 3, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00);
+        Booking booking = new Booking(2, "2", 3,2, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00);
 
         when(bookingDAOMock.getBookingById(2)).thenReturn(booking);
 
@@ -83,8 +83,8 @@ public class BookingServiceTest {
     @Test
     void getBookingsByCustomerId_Success() throws BookingException {
         List<Booking> bookings = Arrays.asList(
-                new Booking(4, "2", 3, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00),
-                new Booking(5, "2", 3, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00)
+                new Booking(4, "2", 3,2, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00),
+                new Booking(5, "2", 3,2, "Jaffna",parseDateTime("2025-01-30 10:00:00"), 2000.00)
         );
 
         when(bookingDAOMock.getBookingsByCustomerId(2)).thenReturn(bookings);

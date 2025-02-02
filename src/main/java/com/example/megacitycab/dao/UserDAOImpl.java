@@ -4,9 +4,12 @@ import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.User;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.megacitycab.util.HashPassword.hashPassword;
 
 public class UserDAOImpl implements UserDAO {
     private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
@@ -49,13 +52,15 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean addUser(User user) {
-        String query = "INSERT INTO users (username, password, name, address, nic, phone, role, email) VALUES (?, HASHBYTES('SHA2_256', ?), ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (username, password, name, address, nic, phone, role, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
+            String hashedPassword = hashPassword(user.getPassword());
+
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
+            statement.setString(2, hashedPassword);
             statement.setString(3, user.getName());
             statement.setString(4, user.getAddress());
             statement.setString(5, user.getNic());
@@ -64,7 +69,7 @@ public class UserDAOImpl implements UserDAO {
             statement.setString(8, user.getEmail());
             return statement.executeUpdate() > 0;
 
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return false;
@@ -72,12 +77,14 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String query = "UPDATE users SET password = HASHBYTES('SHA2_256', ?), name = ?, address = ?, nic = ?, phone = ?, role = ?, email = ?, WHERE id = ?";
+        String query = "UPDATE users SET password =  ?, name = ?, address = ?, nic = ?, phone = ?, role = ?, email = ?, WHERE id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, user.getPassword());
+            String hashedPassword = hashPassword(user.getPassword());
+
+            statement.setString(1, hashedPassword);
             statement.setString(2, user.getName());
             statement.setString(3, user.getAddress());
             statement.setString(4, user.getNic());
@@ -89,6 +96,8 @@ public class UserDAOImpl implements UserDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }

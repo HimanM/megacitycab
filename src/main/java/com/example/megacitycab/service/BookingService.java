@@ -19,17 +19,19 @@ public class BookingService {
     }
 
     // Create a booking
-    public void createBooking(Booking booking) throws BookingException {
+    public boolean createBooking(Booking booking) throws BookingException {
+        boolean b = false;
         if (booking == null) {
             throw new BookingException("Booking data cannot be null");
         }
-
         try {
             // Perform additional validations if needed
             bookingDAO.addBooking(booking);
+            b = true;
         } catch (Exception e) {
             throw new BookingException("Error while creating booking", e);
         }
+        return b;
     }
 
     // Update an existing booking
@@ -79,5 +81,9 @@ public class BookingService {
         } catch (Exception e) {
             throw new BookingException("Error while canceling booking", e);
         }
+    }
+
+    public List<Booking> getBookingsByCustomer(int customerId) {
+        return bookingDAO.getBookingsByCustomerId(customerId);
     }
 }

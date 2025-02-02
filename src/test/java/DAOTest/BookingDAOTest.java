@@ -13,7 +13,7 @@ public class BookingDAOTest {
 
         // 1. Test Add Booking
         System.out.println("Adding a new booking...");
-        Booking newBooking = new Booking(101, "ORD004", 3, "123 Main St to 456 Elm St", LocalDateTime.now(), 2500.00);
+        Booking newBooking = new Booking(101, "ORD004", 3, 01,"123 Main St to 456 Elm St", LocalDateTime.now(), 2500.00);
         bookingDAO.addBooking(newBooking);
         System.out.println("Booking added successfully!");
 
@@ -24,6 +24,7 @@ public class BookingDAOTest {
             System.out.println("Booking Details: ");
             System.out.println("Order Number: " + fetchedBooking.getOrderNumber());
             System.out.println("Customer ID: " + fetchedBooking.getCustomerId());
+            System.out.println("Driver ID" + fetchedBooking.getDriverId());
             System.out.println("Destination: " + fetchedBooking.getDestinationDetails());
             System.out.println("Booking Date: " + fetchedBooking.getBookingDate());
             System.out.println("Total Amount: " + fetchedBooking.getTotalAmount());
