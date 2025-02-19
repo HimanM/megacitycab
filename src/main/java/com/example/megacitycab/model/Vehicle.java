@@ -4,44 +4,89 @@ import java.time.LocalDateTime;
 
 public class Vehicle {
     private int id;
-    private String vehicleNumber;
+    private String vehicleType;
     private String model;
-    private String driverName;
-    private String driverContact;
-    private String status;
-    private LocalDateTime lastUpdated;
+    private String manufacturer;
+    private int year;
+    private int capacity;
+    private String licensePlate;
+    private  LocalDateTime createdAt;
 
     public Vehicle() {}
 
-    public Vehicle(int id, String vehicleNumber, String model, String driverName, String driverContact, String status, LocalDateTime lastUpdated) {
+    public Vehicle(int id, String vehicleType, String model, String licensePlate, String manufacturer, int year, int capacity) {
         this.id = id;
-        this.vehicleNumber = vehicleNumber;
+        this.vehicleType = vehicleType;
         this.model = model;
-        this.driverName = driverName;
-        this.driverContact = driverContact;
-        this.status = status;
-        this.lastUpdated = lastUpdated;
+        this.licensePlate = licensePlate;
+        this.manufacturer = manufacturer;
+        this.year = year;
+        this.capacity = capacity;
+        this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
 
-    public String getVehicleNumber() { return vehicleNumber; }
-    public void setVehicleNumber(String vehicleNumber) { this.vehicleNumber = vehicleNumber; }
+    public int getId() {
+        return id;
+    }
 
-    public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getDriverName() { return driverName; }
-    public void setDriverName(String driverName) { this.driverName = driverName; }
+    public String getVehicleType() {
+        return vehicleType;
+    }
 
-    public String getDriverContact() { return driverContact; }
-    public void setDriverContact(String driverContact) { this.driverContact = driverContact; }
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getModel() {
+        return model;
+    }
 
-    public LocalDateTime getLastUpdated() { return lastUpdated; }
-    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

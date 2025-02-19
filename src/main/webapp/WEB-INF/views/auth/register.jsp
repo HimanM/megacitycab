@@ -60,11 +60,17 @@
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role</label>
-                            <select class="form-select" id="role" name="role" required>
+                            <select class="form-select" id="role" name="role" required onchange="toggleLicenseField()">
                                 <option value="" disabled selected>Select your role</option>
                                 <option value="Customer">Customer</option>
                                 <option value="Driver">Driver</option>
                             </select>
+                        </div>
+
+                        <!-- License number input (hidden by default) -->
+                        <div class="mb-3" id="licenseField" style="display: none;">
+                            <label for="license_number" class="form-label">Driver's License Number</label>
+                            <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Enter your license number">
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
@@ -79,6 +85,18 @@
 </div>
 
 <!-- Bootstrap JS and dependencies -->
+<script>
+    function toggleLicenseField() {
+        let role = document.getElementById("role").value;
+        let licenseField = document.getElementById("licenseField");
+
+        if (role === "Driver") {
+            licenseField.style.display = "block";
+        } else {
+            licenseField.style.display = "none";
+        }
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

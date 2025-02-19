@@ -4,9 +4,11 @@ package com.example.megacitycab.service;
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.DriverDAO;
 import com.example.megacitycab.dao.DriverDAOimpl;
+import com.example.megacitycab.model.Driver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DriverService {
@@ -16,9 +18,35 @@ public class DriverService {
         this.driverDAO = new DriverDAOimpl(); // Default implementation
     }
 
-    public DriverService(DriverDAO driverDAO) {
-        this.driverDAO = driverDAO; // Allow dependency injection for testing or customization
+//    public DriverService(DriverDAO driverDAO) {
+//        this.driverDAO = driverDAO; // Allow dependency injection for testing or customization
+public int getAndAssignAvailableDriver() {
+    String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' ORDER BY id ASC";
+    String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
+
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement selectStmt = connection.prepareStatement(SELECT_AVAILABLE_DRIVER);
+         PreparedStatement updateStmt = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+
+        ResultSet resultSet = selectStmt.executeQuery();
+
+        if (resultSet.next()) {
+            int driverId = resultSet.getInt("id");
+
+            // Mark the driver as busy to prevent duplicate assignments
+            updateStmt.setInt(1, driverId);
+            updateStmt.executeUpdate();
+
+            return driverId;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return -1; // No available driver found
+}
+
+
 
     public boolean acceptBooking(int driverId, int bookingId) {
         String ACCEPT_BOOKING_QUERY = "UPDATE bookings SET driver_id = ?, status = 'ACCEPTED' WHERE id = ? AND status = 'PENDING'";
@@ -35,5 +63,21 @@ public class DriverService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean registerDriver(Driver driver) {
+        return driverDAO.addDriver(driver);
+    }
+
+    public void releaseDriver(int driverId) {
+        String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'Available' WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+
+            statement.setInt(1, driverId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

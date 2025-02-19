@@ -51,11 +51,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean addUser(User user) {
+    public int addUser(User user) {
         String query = "INSERT INTO users (username, password, name, address, nic, phone, role, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             String hashedPassword = hashPassword(user.getPassword());
 
@@ -67,12 +67,22 @@ public class UserDAOImpl implements UserDAO {
             statement.setString(6, user.getPhone());
             statement.setString(7, user.getRole());
             statement.setString(8, user.getEmail());
-            return statement.executeUpdate() > 0;
+
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1); // Return the user ID
+                    }
+                }
+            }
 
         } catch (SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return -1; // Return -1 if insertion fails
     }
 
     @Override

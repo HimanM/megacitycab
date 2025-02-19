@@ -1,5 +1,8 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.DriverDAO;
+import com.example.megacitycab.dao.DriverDAOimpl;
+import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.service.AuthService;
 import com.example.megacitycab.service.CustomerService;
@@ -22,6 +25,9 @@ import java.util.List;
 @WebServlet("/auth/*")
 public class AuthController extends HttpServlet {
     private CustomerService customerService;
+
+    DriverDAO driverDAO = new DriverDAOimpl(); // Default implementation
+
 
     @Override
     public void init() {
@@ -84,7 +90,14 @@ public class AuthController extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("userId", customer.getId());
             session.setAttribute("username", customer.getUsername());
-            resp.sendRedirect(req.getContextPath() + "/customer/dashboard");
+            if(customer.getRole().equals("Driver")){
+                resp.sendRedirect(req.getContextPath() + "/driver/dashboard");
+            } else if (customer.getRole().equals("Admin")){
+                resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/customer/dashboard");
+            }
+
         } else {
             req.setAttribute("error", "Invalid username or password");
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp");
@@ -101,11 +114,10 @@ public class AuthController extends HttpServlet {
         String phone = req.getParameter("phone");
         String role = req.getParameter("role");
         String email = req.getParameter("email");
+        String licenseNumber = req.getParameter("license_number");  // Capture license number
 
-        // Initialize a list to collect error messages
         List<String> errors = new ArrayList<>();
 
-        // Input validation with specific error messages
         if (!ValidationUtil.isValidUsername(username)) {
             errors.add("Username must be alphanumeric and meet the required standards.");
         }
@@ -118,24 +130,18 @@ public class AuthController extends HttpServlet {
             errors.add("The provided email address is already registered.");
         }
 
-        // Additional field validations
-        if (name == null || name.trim().isEmpty()) {
-            errors.add("Name cannot be empty.");
-        }
-        if (address == null || address.trim().isEmpty()) {
-            errors.add("Address cannot be empty.");
-        }
-        if (nic == null || nic.trim().isEmpty()) {
-            errors.add("NIC cannot be empty.");
-        }
-        if (phone == null || phone.trim().isEmpty()) {
-            errors.add("Phone number cannot be empty.");
-        }
-        if (role == null || (!role.equals("Customer") && !role.equals("Driver"))) {
-            errors.add("Please select a valid role (Customer or Driver).");
+        if (name == null || name.trim().isEmpty()) errors.add("Name cannot be empty.");
+        if (address == null || address.trim().isEmpty()) errors.add("Address cannot be empty.");
+        if (nic == null || nic.trim().isEmpty()) errors.add("NIC cannot be empty.");
+        if (phone == null || phone.trim().isEmpty()) errors.add("Phone number cannot be empty.");
+        if (role == null || (!role.equals("Customer") && !role.equals("Driver") && !role.equals("Admin"))) {
+            errors.add("Please select a valid role (Customer, Driver, or Admin).");
         }
 
-        // Check if there are any errors
+        if ("Driver".equals(role) && (licenseNumber == null || licenseNumber.trim().isEmpty())) {
+            errors.add("License number is required for drivers.");
+        }
+
         if (errors.isEmpty()) {
             User newUser = new User();
             newUser.setUsername(username);
@@ -148,19 +154,37 @@ public class AuthController extends HttpServlet {
             newUser.setEmail(email);
             newUser.setCreatedAt(java.time.LocalDateTime.now());
 
-            boolean isRegistered = customerService.registerCustomer(newUser);
-            if (isRegistered) {
-                resp.sendRedirect(req.getContextPath() + "/auth/login");
+            int userId = customerService.registerCustomer(newUser);
+            System.out.println("User ID: " + userId);
+
+            if (userId > 0) {  // Registration successful
+                if ("Driver".equals(role)) {
+                    Driver driver = new Driver();
+                    driver.setUserId(userId);
+                    driver.setLicenseNumber(licenseNumber);
+                    driver.setCreatedAt(java.time.LocalDateTime.now());
+
+                    boolean driverRegistered = driverDAO.addDriver(driver);
+                    if (driverRegistered) {
+                        resp.sendRedirect(req.getContextPath() + "/auth/login");  // Redirect to login
+                    } else {
+                        req.setAttribute("error", "Driver registration failed. Please try again.");
+                        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp");
+                        dispatcher.forward(req, resp);
+                    }
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/auth/login");
+                }
             } else {
                 req.setAttribute("error", "Registration failed. Please try again.");
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp");
                 dispatcher.forward(req, resp);
             }
         } else {
-            // If there are errors, display them on the registration page
             req.setAttribute("errors", errors);
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp");
             dispatcher.forward(req, resp);
         }
     }
+
 }

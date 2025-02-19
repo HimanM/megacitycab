@@ -17,6 +17,7 @@ public class BookingDAOImpl implements BookingDAO {
     private static final String UPDATE_BOOKING = "UPDATE bookings SET order_number = ?, customer_id = ?, destination_details = ?, booking_date = ?, total_amount = ?, status = ? WHERE id = ?";
     private static final String DELETE_BOOKING = "DELETE FROM bookings WHERE id = ?";
     private static final String UPDATE_BOOKING_DRIVER = "UPDATE bookings SET driver_id = ?, status = 'ACCEPTED' WHERE id = ?";
+    private static final String UPDATE_BOOKING_STATUS ="UPDATE bookings SET status = ? WHERE id = ?";
 
     @Override
     public void addBooking(Booking booking) {
@@ -160,6 +161,73 @@ public class BookingDAOImpl implements BookingDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean updateBookingStatus(int bookingId, String status) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_BOOKING_STATUS)) {
+
+            statement.setString(1, status);
+            statement.setInt(2, bookingId);
+
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public List<Booking> getBookingsByStatus(int customerId, String... statuses) {
+        List<Booking> bookings = new ArrayList<>();
+        String query = "SELECT * FROM bookings WHERE customer_id = ? AND status IN (" +
+                String.join(",", "?".repeat(statuses.length).split("")) + ") ORDER BY booking_date DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, customerId);
+            for (int i = 0; i < statuses.length; i++) {
+                stmt.setString(i + 2, statuses[i]);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Booking booking = new Booking();
+                booking.setId(rs.getInt("id"));
+                booking.setOrderNumber(rs.getString("order_number"));
+                booking.setDestinationDetails(rs.getString("destination_details"));
+                booking.setBookingDate(rs.getTimestamp("booking_date").toLocalDateTime());
+                booking.setTotalAmount(rs.getDouble("total_amount"));
+                booking.setStatus(rs.getString("status"));
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    @Override
+    public boolean hasActiveBooking(int customerId) {
+        String CHECK_ACTIVE_BOOKING = "SELECT COUNT(*) FROM bookings WHERE customer_id = ? AND status IN ('APPROVED', 'PENDING')";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(CHECK_ACTIVE_BOOKING)) {
+
+            statement.setInt(1, customerId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                return true; // User has active bookings
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false; // No active bookings found
     }
 
     private Booking mapRowToBooking(ResultSet resultSet) throws SQLException {

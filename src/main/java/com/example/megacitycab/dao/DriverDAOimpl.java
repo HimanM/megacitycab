@@ -3,47 +3,78 @@ package com.example.megacitycab.dao;
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.model.Driver;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DriverDAOimpl implements DriverDAO {
 
+
     @Override
-    public List<Driver> getAvailableDrivers() {
-        String query = "SELECT * FROM drivers WHERE is_available = TRUE";
-        List<Driver> drivers = new ArrayList<>();
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
-            while (rs.next()) {
-                Driver driver = new Driver();
-                driver.setId(rs.getInt("id"));
-                driver.setUserId(rs.getInt("user_id"));
-                driver.setVehicleDetails(rs.getString("vehicle_details"));
-                driver.setLicenseNumber(rs.getString("license_number"));
-                driver.setAvailable(rs.getBoolean("is_available"));
-                drivers.add(driver);
-            }
+    public boolean addDriver(Driver driver) {
+        String sql = "INSERT INTO drivers (user_id, license_number, verified, created_at) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, driver.getUserId());
+            stmt.setString(2, driver.getLicenseNumber());
+            stmt.setString(3, "No");
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(driver.getCreatedAt()));
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return false;
         }
+    }
+
+
+
+    @Override
+    public boolean deleteDriver(int driverId) {
+        String query = "DELETE FROM drivers WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, driverId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean verifyDriver(int driverId) {
+        String query = "UPDATE drivers SET verified = ? WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, "Yes");
+            statement.setInt(2, driverId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //to be fixed
+    @Override
+    public Driver getDriverById(int driverId) {
+        return null;
+    }
+
+    @Override
+    public List<Driver> getAllDrivers() {
+        List<Driver> drivers = new ArrayList<>();
         return drivers;
     }
 
     @Override
-    public boolean assignDriverToBooking(int bookingId, int driverId) {
-        String query = "UPDATE bookings SET driver_id = ?, status = 'ACCEPTED' WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, driverId);
-            statement.setInt(2, bookingId);
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public boolean updateDriver(Driver driver) {
+        return false;
     }
 }

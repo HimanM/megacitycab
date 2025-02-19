@@ -43,7 +43,7 @@ public class TestDatabase {
                 "CUSTOMER",
                 LocalDateTime.now()
         );
-        boolean userAdded = userDAO.addUser(newUser);
+        int userAdded = userDAO.addUser(newUser);
         System.out.println("User added: " + userAdded);
 
         // 2. Get user by username

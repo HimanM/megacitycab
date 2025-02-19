@@ -6,6 +6,7 @@ import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
 
 import java.util.List;
+import java.util.Random;
 
 public class BookingService {
     private final BookingDAO bookingDAO;
@@ -33,6 +34,14 @@ public class BookingService {
         }
         return b;
     }
+
+    private static final Random random = new Random();
+
+    public double calculateFare(String destination) {
+        // Generate a random fare between $10 and $100
+        return 10 + (90 * random.nextDouble());
+    }
+
 
     // Update an existing booking
     public void updateBooking(Booking updatedBooking) throws BookingException {
@@ -71,8 +80,8 @@ public class BookingService {
         }
     }
 
-    // Cancel a booking
-    public boolean cancelBooking(int bookingId) throws BookingException {
+    // Delete a booking
+    public boolean deleteBooking(int bookingId) throws BookingException {
         try {
             if (!bookingDAO.deleteBooking(bookingId)) {
                 throw new BookingException("Booking with ID " + bookingId + " could not be canceled or does not exist");
@@ -82,8 +91,27 @@ public class BookingService {
             throw new BookingException("Error while canceling booking", e);
         }
     }
+    public boolean hasActiveBooking(int customerId){
+        return bookingDAO.hasActiveBooking(customerId);
+    }
+
+    public void cancelBooking(int bookingId) {
+            bookingDAO.updateBookingStatus(bookingId, "Cancelled");
+    }
 
     public List<Booking> getBookingsByCustomer(int customerId) {
         return bookingDAO.getBookingsByCustomerId(customerId);
+    }
+
+    public List<Booking> getActiveBookings(int customerId) {
+        return bookingDAO.getBookingsByStatus(customerId, "PENDING", "Approved");
+    }
+
+    public List<Booking> getPreviousBookings(int customerId) {
+        return bookingDAO.getBookingsByStatus(customerId, "Completed");
+    }
+
+    public List<Booking> getCancelledBookings(int customerId) {
+        return bookingDAO.getBookingsByStatus(customerId, "Cancelled");
     }
 }

@@ -9,35 +9,45 @@ import java.util.ArrayList;
 
 public class VehicleDAOImpl implements VehicleDAO {
     @Override
-    public void addVehicle(Vehicle vehicle) {
-        String query = "INSERT INTO vehicles (vehicle_number, model, driver_name, driver_contact, status, last_updated) VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean addVehicle(Vehicle vehicle) {
+        String query = "INSERT INTO vehicles (vehicle_type, model, manufacturer, year, capacity, license_plate, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            preparedStatement.setString(1, vehicle.getVehicleNumber());
-            preparedStatement.setString(2, vehicle.getModel());
-            preparedStatement.setString(3, vehicle.getDriverName());
-            preparedStatement.setString(4, vehicle.getDriverContact());
-            preparedStatement.setString(5, vehicle.getStatus());
-            preparedStatement.setTimestamp(6, Timestamp.valueOf(vehicle.getLastUpdated()));
+            statement.setString(1, vehicle.getVehicleType());
+            statement.setString(2, vehicle.getModel());
+            statement.setString(3, vehicle.getManufacturer());
+            statement.setInt(4, vehicle.getYear());
+            statement.setInt(5, vehicle.getCapacity());
+            statement.setString(6, vehicle.getLicensePlate());
+            statement.setTimestamp(7, Timestamp.valueOf(vehicle.getCreatedAt()));
 
-            preparedStatement.executeUpdate();
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     @Override
-    public Vehicle getVehicleById(int id) {
+    public Vehicle getVehicleById(int vehicleId) {
         String query = "SELECT * FROM vehicles WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return mapRowToVehicle(resultSet);
+            statement.setInt(1, vehicleId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return new Vehicle(
+                            rs.getInt("id"),
+                            rs.getString("vehicle_type"),
+                            rs.getString("model"),
+                            rs.getString("license_plate"),
+                            rs.getString("manufacturer"),
+                            rs.getInt("year"),
+                            rs.getInt("capacity")
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,13 +59,20 @@ public class VehicleDAOImpl implements VehicleDAO {
     public List<Vehicle> getAllVehicles() {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "SELECT * FROM vehicles";
-
         try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
 
-            while (resultSet.next()) {
-                vehicles.add(mapRowToVehicle(resultSet));
+            while (rs.next()) {
+                vehicles.add(new Vehicle(
+                        rs.getInt("id"),
+                        rs.getString("vehicle_type"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getString("manufacturer"),
+                        rs.getInt("year"),
+                        rs.getInt("capacity")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,54 +81,58 @@ public class VehicleDAOImpl implements VehicleDAO {
     }
 
     @Override
-    public void updateVehicle(Vehicle vehicle) {
-        String query = "UPDATE vehicles SET vehicle_number = ?, model = ?, driver_name = ?, driver_contact = ?, status = ?, last_updated = ? WHERE id = ?";
+    public boolean updateVehicle(Vehicle vehicle) {
+        String query = "UPDATE vehicles SET vehicle_type = ?, model = ?, manufacturer = ?, year = ?, capacity = ?, license_plate = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            preparedStatement.setString(1, vehicle.getVehicleNumber());
-            preparedStatement.setString(2, vehicle.getModel());
-            preparedStatement.setString(3, vehicle.getDriverName());
-            preparedStatement.setString(4, vehicle.getDriverContact());
-            preparedStatement.setString(5, vehicle.getStatus());
-            preparedStatement.setTimestamp(6, Timestamp.valueOf(vehicle.getLastUpdated()));
-            preparedStatement.setInt(7, vehicle.getId());
+            statement.setString(1, vehicle.getVehicleType());
+            statement.setString(2, vehicle.getModel());
+            statement.setString(3, vehicle.getManufacturer());
+            statement.setInt(4, vehicle.getYear());
+            statement.setInt(5, vehicle.getCapacity());
+            statement.setString(6, vehicle.getLicensePlate());
+            statement.setInt(7, vehicle.getId());
 
-            preparedStatement.executeUpdate();
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     @Override
-    public boolean deleteVehicle(int id) {
+    public boolean deleteVehicle(int vehicleId) {
         String query = "DELETE FROM vehicles WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-            return true;
+            statement.setInt(1, vehicleId);
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override
-    public List<Vehicle> getVehiclesByDriver(String driver) {
-
+    public List<Vehicle> getAvailableVehicles() {
         List<Vehicle> vehicles = new ArrayList<>();
-        String query = "SELECT * FROM vehicles WHERE driver_name = ?";
-
+        String query = "SELECT * FROM vehicles WHERE status = 'Available'";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
 
-            preparedStatement.setString(1, driver);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                vehicles.add(mapRowToVehicle(resultSet));
+            while (rs.next()) {
+                vehicles.add(new Vehicle(
+                        rs.getInt("id"),
+                        rs.getString("vehicle_type"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getString("manufacturer"),
+                        rs.getInt("year"),
+                        rs.getInt("capacity")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,35 +141,15 @@ public class VehicleDAOImpl implements VehicleDAO {
     }
 
     @Override
-    public List<Vehicle> getVehiclesByStatus(String status) {
-
-        List<Vehicle> vehicles = new ArrayList<>();
-        String query = "SELECT * FROM vehicles WHERE status = ?";
-
+    public void releaseVehicle(int vehicleId) {
+        String query = "UPDATE vehicles SET status = 'Available' WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query))
-        {
-            preparedStatement.setString(1, status);
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            while (resultSet.next()) {
-                vehicles.add(mapRowToVehicle(resultSet));
-            }
+            statement.setInt(1, vehicleId);
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return vehicles;
-    }
-
-    private Vehicle mapRowToVehicle(ResultSet resultSet) throws SQLException {
-        return new Vehicle(
-                resultSet.getInt("id"),
-                resultSet.getString("vehicle_number"),
-                resultSet.getString("model"),
-                resultSet.getString("driver_name"),
-                resultSet.getString("driver_contact"),
-                resultSet.getString("status"),
-                resultSet.getTimestamp("last_updated").toLocalDateTime()
-        );
     }
 }

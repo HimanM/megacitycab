@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,16 +18,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/placeBooking">Place Booking</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/booking/placeBooking">Place Booking</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/viewBookings">View Bookings</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/booking/viewBookings">View Bookings</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/customer/availableVehicles">Available Vehicles</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/calculateBill">Calculate Bill</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="${pageContext.request.contextPath}/auth/logout">Logout</a>

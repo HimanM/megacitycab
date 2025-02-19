@@ -1,0 +1,152 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.megacitycab.model.Booking" %>
+<%@ page import="com.example.megacitycab.model.Vehicle" %>
+<%@ page import="java.util.List" %>
+
+<%
+    Double fare = (Double) request.getAttribute("fare");
+    String status = (String) request.getAttribute("status");
+    String destination = request.getAttribute("destination") != null ? request.getAttribute("destination").toString() : "";
+    String bookingDate = request.getAttribute("bookingDate") != null ? request.getAttribute("bookingDate").toString() : "";
+    Booking booking = (Booking) request.getAttribute("booking");
+    boolean fareCalculated = fare != null;
+    Boolean activeBooking = (Boolean) request.getAttribute("activeBooking");
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        function disableCalculateFare() {
+            document.getElementById("calculateFareBtn").disabled = true;
+            document.getElementById("placeBookingBtn").style.display = "inline-block";
+            document.getElementById("cancelBtn").style.display = "inline-block";
+        }
+        function showActiveBookingMessage() {
+            let modal = new bootstrap.Modal(document.getElementById("activeBookingModal"));
+            modal.show();
+        }
+
+        <% if (activeBooking != null && activeBooking) { %>
+        window.onload = function() { showActiveBookingMessage(); };
+        <% } %>
+    </script>
+</head>
+<body>
+
+
+<!-- Active Booking Alert Modal -->
+<div class="modal fade" id="activeBookingModal" tabindex="-1" aria-labelledby="activeBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activeBookingModalLabel">Active Booking Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>You already have an active booking. Please check your dashboard.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="<%= request.getContextPath() %>/customer/booking/viewBookings" class="btn btn-primary">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="text-center mb-4">Place a Booking</h2>
+
+    <form action="<%= request.getContextPath() %>/customer/booking/placeBooking" method="post">
+        <div class="mb-3">
+            <label for="destination" class="form-label">Destination</label>
+            <input type="text" class="form-control" id="destination" name="destination" value="<%= destination %>" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bookingDate" class="form-label">Booking Date & Time</label>
+            <input type="datetime-local" class="form-control" id="bookingDate" name="bookingDate" value="<%= bookingDate %>" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="vehicleType" class="form-label">Select Vehicle</label>
+            <select class="form-select" id="vehicleType" name="vehicleId" required>
+                <option value="" disabled selected>Choose a vehicle</option>
+                <%
+                    List<Vehicle> vehicles = (List<Vehicle>) request.getAttribute("availableVehicles");
+                    if (vehicles != null) {
+                        for (Vehicle v : vehicles) {
+                %>
+                <option value="<%= v.getId() %>">
+                    <%= v.getManufacturer() %> - <%= v.getModel() %> (Capacity: <%= v.getCapacity() %>)
+                </option>
+                <%
+                        }
+                    }
+                %>
+            </select>
+        </div>
+
+        <% if (fareCalculated) { %>
+        <div class="mb-3">
+            <label class="form-label">Estimated Fare</label>
+            <input type="text" class="form-control" value="$<%= String.format("%.2f", fare) %>" disabled>
+        </div>
+        <% } %>
+
+        <% if (!fareCalculated) { %>
+        <button type="submit" name="calculateFare" class="btn btn-secondary">Calculate Fare</button>
+        <% } else { %>
+        <button type="submit" name="placeBooking" class="btn btn-primary">Place Booking</button>
+        <% } %>
+    </form>
+
+    <% if (booking != null) { %>
+    <div class="alert mt-4 alert-warning rounded shadow p-4">
+        <h4 class="alert-heading text-center fw-bold">Booking Confirmed!</h4>
+        <hr>
+        <div class="d-flex justify-content-between">
+            <div>
+                <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>Destination:</p>
+                <p class="fw-bold"><%= booking.getDestinationDetails() %></p>
+            </div>
+            <div>
+                <p class="mb-1"><i class="fas fa-dollar-sign me-2"></i>Price:</p>
+                <p class="fw-bold"><%= booking.getTotalAmount() %></p>
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <p class="mb-0"><i class="fas fa-check-circle me-2"></i>Status:</p>
+                <p class="fw-bold"><%= booking.getStatus() %></p>
+            </div>
+            <div>
+                <a href="<%= request.getContextPath() %>/customer/booking/viewBookings" class="btn btn-primary">
+                    <i class="fas fa-eye me-2"></i>View Booking Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

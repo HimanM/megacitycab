@@ -100,7 +100,7 @@ public class BookingServiceTest {
     void cancelBooking_Success() throws BookingException {
         doNothing().when(bookingDAOMock).deleteBooking(2);
 
-        boolean result = bookingService.cancelBooking(2);
+        boolean result = bookingService.deleteBooking(2);
 
         assertTrue(result);
         verify(bookingDAOMock, times(1)).deleteBooking(2);
