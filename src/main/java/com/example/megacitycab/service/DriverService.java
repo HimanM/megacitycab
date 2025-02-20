@@ -5,6 +5,7 @@ import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.DriverDAO;
 import com.example.megacitycab.dao.DriverDAOimpl;
 import com.example.megacitycab.model.Driver;
+import com.example.megacitycab.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -79,5 +80,13 @@ public int getAndAssignAvailableDriver() {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public User getDriverById(int driverId) {
+        return driverDAO.getDriverById(driverId);
+    }
+
+    public Integer getDriverIdByUserId(Integer userId) {
+        return driverDAO.getDriverIdByUserId(userId);
     }
 }

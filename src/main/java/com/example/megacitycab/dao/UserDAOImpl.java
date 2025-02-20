@@ -170,11 +170,11 @@ public class UserDAOImpl implements UserDAO {
                 resultSet.getString("username"),
                 resultSet.getString("password"),
                 resultSet.getString("name"),
+                resultSet.getString("email"),
                 resultSet.getString("address"),
                 resultSet.getString("nic"),
                 resultSet.getString("phone"),
                 resultSet.getString("role"),
-                resultSet.getString("email"),
                 resultSet.getTimestamp("created_at").toLocalDateTime()
         );
     }

@@ -11,6 +11,7 @@
     Booking booking = (Booking) request.getAttribute("booking");
     boolean fareCalculated = fare != null;
     Boolean activeBooking = (Boolean) request.getAttribute("activeBooking");
+    Boolean noDrivers = (Boolean) request.getAttribute("noDrivers");
 %>
 
 <!DOCTYPE html>
@@ -43,9 +44,17 @@
             let modal = new bootstrap.Modal(document.getElementById("activeBookingModal"));
             modal.show();
         }
+        function showNoDriversMessage() {
+            let modal = new bootstrap.Modal(document.getElementById("noDriversModal"));
+            modal.show();
+        }
 
         <% if (activeBooking != null && activeBooking) { %>
         window.onload = function() { showActiveBookingMessage(); };
+        <% } %>
+
+        <% if (noDrivers != null && noDrivers) { %>
+        window.onload = function() { showNoDriversMessage(); };
         <% } %>
     </script>
 </head>
@@ -70,6 +79,20 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="noDriverFoundModal" tabindex="-1" aria-labelledby="noDriverFoundModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noDriverFoundModalLabel">No Drivers Available</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>No Drivers Available At the Moment. Please try again later.</p>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <h2 class="text-center mb-4">Place a Booking</h2>
 

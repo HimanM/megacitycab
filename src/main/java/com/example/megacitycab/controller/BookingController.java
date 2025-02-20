@@ -1,8 +1,6 @@
 package com.example.megacitycab.controller;
 
-import com.example.megacitycab.model.Assignment;
-import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.Vehicle;
+import com.example.megacitycab.model.*;
 import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
@@ -118,10 +116,9 @@ public class BookingController extends HttpServlet {
 
                 // Assign an available driver
                 Integer driverId = driverService.getAndAssignAvailableDriver();
-                if (driverId == null) {
-                    req.setAttribute("error", "No available drivers at the moment.");
-                    RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
-                    dispatcher.forward(req, resp);
+                if (driverId == -1) {
+                    req.setAttribute("noDrivers", true);
+                    initPlaceBooking(req, resp);
                     return;
                 }
 
@@ -147,6 +144,7 @@ public class BookingController extends HttpServlet {
                     if (!assignmentSuccess) {
                         req.setAttribute("error", "Booking placed, but driver assignment failed.");
                     }
+                    vehicleService.assignVehicle(selectedVehicleId);
 
                     req.setAttribute("booking", booking);
                     req.setAttribute("status", booking.getStatus());
@@ -202,6 +200,7 @@ public class BookingController extends HttpServlet {
     private void viewBookingDetails(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
         Booking booking = bookingService.getBookingById(bookingId);
+        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
 
         int userId = (int) req.getSession().getAttribute("userId");
         if (booking == null || !(booking.getCustomerId() == userId)) {
@@ -209,7 +208,18 @@ public class BookingController extends HttpServlet {
             return;
         }
 
-        req.setAttribute("booking", booking);
+        if (assignment != null) {
+            int driverId = assignment.getDriverId();
+            int vehicleId = assignment.getVehicleId();
+
+            User driver = driverService.getDriverById(driverId);
+            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+            req.setAttribute("driverName", driver.getName());
+            req.setAttribute("driverPhone", driver.getPhone());
+            req.setAttribute("vehicle", vehicle.getManufacturer() + " " + vehicle.getModel() + " Plate No:" +vehicle.getLicensePlate());
+            req.setAttribute("booking", booking);
+        }
+
         req.getRequestDispatcher("/WEB-INF/views/customer/bookingDetails.jsp").forward(req, resp);
     }
     private void cancelBooking(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -237,13 +247,12 @@ public class BookingController extends HttpServlet {
         // Check if the user has an active booking
         if (bookingService.hasActiveBooking(customerId)) {
             req.setAttribute("activeBooking", true);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
-
-            // Fetch available vehicles for selection
-            List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
-            req.setAttribute("availableVehicles", availableVehicles);
-            dispatcher.forward(req, resp);
-            return;
         }
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
+
+        // Fetch available vehicles for selection
+        List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
+        req.setAttribute("availableVehicles", availableVehicles);
+        dispatcher.forward(req, resp);
     }
 }

@@ -211,6 +211,62 @@ public class BookingDAOImpl implements BookingDAO {
     }
 
     @Override
+    public List<Booking> getBookingsByDriverId(Integer driverId) {
+        List<Booking> bookings = new ArrayList<>();
+
+        String QUERY = "SELECT b.id, u.name AS customer_name, b.destination_details, b.booking_date, b.status " +
+                "FROM bookings b " +
+                "JOIN users u ON b.customer_id = u.id " +
+                "JOIN booking_assignments ba ON b.id = ba.booking_id " +
+                "WHERE ba.driver_id = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(QUERY)) {
+
+            statement.setInt(1, driverId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Booking booking = new Booking();
+                booking.setId(resultSet.getInt("id"));
+                booking.setCustomerName(resultSet.getString("customer_name"));
+                booking.setDestinationDetails(resultSet.getString("destination_details"));
+                booking.setBookingDate(resultSet.getTimestamp("booking_date").toLocalDateTime());
+                booking.setStatus(resultSet.getString("status"));
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return bookings;
+    }
+
+    @Override
+    public boolean acceptBooking(int bookingId, int driverId) {
+        String UPDATE_QUERY = "UPDATE bookings " +
+                "SET status = 'APPROVED' " +
+                "WHERE id = ? " +
+                "AND EXISTS ( " +
+                "    SELECT 1 FROM booking_assignments " +
+                "    WHERE booking_assignments.booking_id = bookings.id " +
+                "    AND booking_assignments.driver_id = ? " +
+                ")";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
+
+            statement.setInt(1, bookingId);
+            statement.setInt(2, driverId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    @Override
     public boolean hasActiveBooking(int customerId) {
         String CHECK_ACTIVE_BOOKING = "SELECT COUNT(*) FROM bookings WHERE customer_id = ? AND status IN ('APPROVED', 'PENDING')";
 
@@ -235,7 +291,6 @@ public class BookingDAOImpl implements BookingDAO {
                 resultSet.getInt("id"),
                 resultSet.getString("order_number"),
                 resultSet.getInt("customer_id"),
-                resultSet.getInt("driver_id"),
                 resultSet.getString("destination_details"),
                 resultSet.getTimestamp("booking_date").toLocalDateTime(),
                 resultSet.getDouble("total_amount")

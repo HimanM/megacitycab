@@ -7,7 +7,7 @@ public class Booking {
     private int id; // Primary Key
     private String orderNumber;
     private int customerId;
-    private int driverId;
+    private String customerName;
     private String destinationDetails;
     private LocalDateTime bookingDate;
     private double totalAmount;
@@ -16,14 +16,14 @@ public class Booking {
     // Constructors
     public Booking() {}
 
-    public Booking(int id, String orderNumber, int customerId,int driverId, String destinationDetails, LocalDateTime bookingDate, double totalAmount) {
+    public Booking(int id, String orderNumber, int customerId, String destinationDetails, LocalDateTime bookingDate, double totalAmount) {
         this.id = id;
         this.orderNumber = orderNumber;
         this.customerId = customerId;
-        this.driverId = driverId;
         this.destinationDetails = destinationDetails;
         this.bookingDate =bookingDate;
         this.totalAmount = totalAmount;
+        this.customerName = "";
         this.status = "PENDING";
     }
 
@@ -84,12 +84,10 @@ public class Booking {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public int getDriverId() {
-        return driverId;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
-
-    public void setDriverId(int driverId) {
-        this.driverId = driverId;
+    public String getCustomerName() {
+        return customerName;
     }
 }

@@ -11,4 +11,5 @@ public interface VehicleDAO {
     boolean deleteVehicle(int vehicleId);
     List<Vehicle> getAvailableVehicles();
     void releaseVehicle(int vehicleId);
+    void assignVehicle(int vehicleId);
 }

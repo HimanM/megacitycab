@@ -12,7 +12,10 @@ public interface BookingDAO {
     boolean deleteBooking(int id); // Delete
     List<Booking> getPendingBookings();
     boolean assignDriverToBooking(int bookingId, int driverId);
-    public boolean hasActiveBooking(int customerId);
+    boolean hasActiveBooking(int customerId);
     boolean updateBookingStatus(int bookingId, String status);
     List<Booking> getBookingsByStatus(int customerId,  String... statuses);
+    List<Booking> getBookingsByDriverId(Integer driverId);
+    boolean acceptBooking(int bookingId, int driverId);
+
 }

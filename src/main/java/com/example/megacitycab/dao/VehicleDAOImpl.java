@@ -152,4 +152,17 @@ public class VehicleDAOImpl implements VehicleDAO {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void assignVehicle(int vehicleId) {
+        String query = "UPDATE vehicles SET status = 'Assigned' WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, vehicleId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

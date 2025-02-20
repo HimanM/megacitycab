@@ -3,6 +3,9 @@
 
 <%
   Booking booking = (Booking) request.getAttribute("booking");
+  String driverName = (String) request.getAttribute("driverName");
+  String driverPhone = (String) request.getAttribute("driverPhone");
+  String vehicleDetails = (String) request.getAttribute("vehicle");
 %>
 
 <!DOCTYPE html>
@@ -21,6 +24,9 @@
     <tr><th>Booking Date</th><td><%= booking.getBookingDate() %></td></tr>
     <tr><th>Total Amount</th><td>$<%= booking.getTotalAmount() %></td></tr>
     <tr><th>Status</th><td><%= booking.getStatus() %></td></tr>
+    <tr><th>Driver</th><td><%= driverName %></td></tr>
+    <tr><th>Driver Contact No</th><td><%= driverPhone %></td></tr>
+    <tr><th>Vehicle</th><td><%= vehicleDetails %></td></tr>
   </table>
   <a href="<%= request.getContextPath() %>/customer/booking/viewBookings" class="btn btn-primary">Back to Bookings</a>
 </div>
