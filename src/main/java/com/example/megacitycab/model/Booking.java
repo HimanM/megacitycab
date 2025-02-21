@@ -9,6 +9,7 @@ public class Booking {
     private int customerId;
     private String customerName;
     private String destinationDetails;
+    private String pickupLocation;
     private LocalDateTime bookingDate;
     private double totalAmount;
     private String status;
@@ -16,11 +17,12 @@ public class Booking {
     // Constructors
     public Booking() {}
 
-    public Booking(int id, String orderNumber, int customerId, String destinationDetails, LocalDateTime bookingDate, double totalAmount) {
+    public Booking(int id, String orderNumber, int customerId, String destinationDetails, String pickupLocation, LocalDateTime bookingDate, double totalAmount) {
         this.id = id;
         this.orderNumber = orderNumber;
         this.customerId = customerId;
         this.destinationDetails = destinationDetails;
+        this.pickupLocation = pickupLocation;
         this.bookingDate =bookingDate;
         this.totalAmount = totalAmount;
         this.customerName = "";
@@ -89,5 +91,13 @@ public class Booking {
     }
     public String getCustomerName() {
         return customerName;
+    }
+
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

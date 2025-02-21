@@ -1,16 +1,11 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.BookingDAO;
 import com.example.megacitycab.dao.BookingDAOImpl;
 import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.model.BookingDetails;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -127,5 +122,13 @@ public class BookingService {
 
     public boolean acceptBooking(int bookingId, int driverId) {
         return bookingDAO.acceptBooking(bookingId, driverId);
+    }
+
+    public BookingDetails getAllDetails(Integer bookingId) {
+        return bookingDAO.getAllDetails(bookingId);
+    }
+
+    public void completeBooking(int bookingId) {
+        bookingDAO.completeBooking(bookingId);
     }
 }

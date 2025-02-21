@@ -22,7 +22,7 @@ public class DriverService {
 //    public DriverService(DriverDAO driverDAO) {
 //        this.driverDAO = driverDAO; // Allow dependency injection for testing or customization
 public int getAndAssignAvailableDriver() {
-    String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' ORDER BY id ASC";
+    String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' AND verified = 'Yes' ORDER BY id ASC";
     String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
 
     try (Connection connection = DatabaseConnection.getConnection();

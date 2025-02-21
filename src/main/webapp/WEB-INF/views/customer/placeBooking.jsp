@@ -8,6 +8,7 @@
     String status = (String) request.getAttribute("status");
     String destination = request.getAttribute("destination") != null ? request.getAttribute("destination").toString() : "";
     String bookingDate = request.getAttribute("bookingDate") != null ? request.getAttribute("bookingDate").toString() : "";
+    String pickupLocation = request.getAttribute("pickupLocation") != null ? request.getAttribute("pickupLocation").toString() : "";
     Booking booking = (Booking) request.getAttribute("booking");
     boolean fareCalculated = fare != null;
     Boolean activeBooking = (Boolean) request.getAttribute("activeBooking");
@@ -100,6 +101,11 @@
         <div class="mb-3">
             <label for="destination" class="form-label">Destination</label>
             <input type="text" class="form-control" id="destination" name="destination" value="<%= destination %>" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="pickupLocation" class="form-label">Pickup Location</label>
+            <input type="text" class="form-control" id="pickupLocation" name="pickupLocation" value="<%= pickupLocation %>" required>
         </div>
 
         <div class="mb-3">

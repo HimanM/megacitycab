@@ -1,5 +1,6 @@
 package com.example.megacitycab.dao;
 import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.model.BookingDetails;
 
 import java.util.List;
 
@@ -17,5 +18,6 @@ public interface BookingDAO {
     List<Booking> getBookingsByStatus(int customerId,  String... statuses);
     List<Booking> getBookingsByDriverId(Integer driverId);
     boolean acceptBooking(int bookingId, int driverId);
-
+    BookingDetails getAllDetails(Integer bookingId);
+    void completeBooking(int bookingId);
 }

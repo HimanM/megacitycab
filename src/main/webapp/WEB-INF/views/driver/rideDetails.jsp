@@ -1,0 +1,76 @@
+<%@ page import="com.example.megacitycab.model.Booking" %>
+<%@ page import="com.example.megacitycab.model.BookingDetails" %>
+<%@ page import="com.example.megacitycab.model.Vehicle" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
+<%
+  BookingDetails bookingDetails = (BookingDetails) request.getAttribute("rideDetails");
+  Booking booking = bookingDetails.getBooking();
+  Vehicle vehicle = bookingDetails.getVehicle();
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ride Details</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Driver Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/driver/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Ride Details</h2>
+
+  <!-- Booking Details -->
+  <div class="card mb-3">
+    <div class="card-header bg-primary text-white">Booking Information</div>
+    <div class="card-body">
+      <p><strong>Booking ID:</strong> <%= booking.getId() %></p>
+      <p><strong>Pickup Location:</strong> <%= booking.getPickupLocation() %></p>
+      <p><strong>Drop-off Location:</strong> <%= booking.getDestinationDetails() %></p>
+      <p><strong>Status:</strong> <%= booking.getStatus() %></p>
+      <p><strong>Price:</strong> $<%= booking.getTotalAmount() %></p>
+      <p><strong>Created At:</strong> <%= booking.getBookingDate() %></p>
+    </div>
+  </div>
+
+  <!-- Vehicle Details -->
+  <div class="card mb-3">
+    <div class="card-header bg-secondary text-white">Vehicle Information</div>
+    <div class="card-body">
+      <p><strong>Vehicle Model:</strong> <%= vehicle.getModel() %></p>
+      <p><strong>License Plate:</strong> <%= vehicle.getLicensePlate() %></p>
+      <p><strong>Capacity:</strong> <%= vehicle.getCapacity() %> passengers</p>
+      <p><strong>Vehicle Manufacturer:</strong> <%= vehicle.getManufacturer() %></p>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="text-center">
+    <a href="${pageContext.request.contextPath}/driver/dashboard/finish?bookingId=<%= bookingDetails.getBooking().getId() %>" class="btn btn-success">Finish Ride</a>
+    <a href="${pageContext.request.contextPath}/driver/dashboard/cancel?bookingId=<%= bookingDetails.getBooking().getId() %>" class="btn btn-danger">Cancel Ride</a>
+  </div>
+</div>
+
+<script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

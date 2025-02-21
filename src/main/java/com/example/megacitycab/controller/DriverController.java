@@ -1,7 +1,9 @@
 package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.model.BookingDetails;
 import com.example.megacitycab.model.Driver;
+import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
 import jakarta.servlet.RequestDispatcher;
@@ -20,6 +22,7 @@ import java.util.List;
 public class DriverController extends HttpServlet {
     private final DriverService driverService = new DriverService();
     private final BookingService bookingService = new BookingService();
+    private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,6 +41,16 @@ public class DriverController extends HttpServlet {
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/driver/dashboard.jsp");
         dispatcher.forward(req, resp);
+
+
+        String action = req.getPathInfo();
+        switch (action) {
+            case "/finish":
+                finishRide(req, resp);
+                break;
+            default:
+
+        }
     }
 
     private void forward(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
@@ -54,16 +67,46 @@ public class DriverController extends HttpServlet {
                 return;
             }
 
-            Integer driverId = (Integer) req.getSession().getAttribute("userId");
-            Integer bookingId = Integer.parseInt(req.getParameter("bookingId"));
+            Integer userId = (Integer) req.getSession().getAttribute("userId");
+            Integer driverId = driverService.getDriverIdByUserId(userId);
+            Integer bookingId;
+
+            try {
+                bookingId = Integer.parseInt(req.getParameter("bookingId"));
+            } catch (NumberFormatException e) {
+                resp.sendRedirect(req.getContextPath() + "/driver/dashboard?error=InvalidBookingId");
+                return;
+            }
 
             if (action.equals("/accept")) {
                 bookingService.acceptBooking(bookingId, driverId);
+                initDetailsPage(bookingId, req, resp);
             } else if (action.equals("/cancel")) {
                 bookingService.cancelBooking(bookingId);
+            } else if (action.equals("/details")) {
+                initDetailsPage(bookingId, req, resp);
             }
+            resp.sendRedirect(req.getContextPath() + "/driver/dashboard");
+    }
 
-            resp.sendRedirect(req.getContextPath() + "/driver/booking");
+    private void finishRide(HttpServletRequest req, HttpServletResponse resp) {
+        int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+        if(bookingAssignmentService.finishRide(bookingId)){
+            req.setAttribute("rideComplete", true);
+        }
+    }
+
+    private void initDetailsPage(Integer bookingId, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+
+        BookingDetails rideDetails = bookingService.getAllDetails(bookingId);
+
+        if (rideDetails != null) {
+            req.setAttribute("rideDetails", rideDetails);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/driver/rideDetails.jsp");
+            dispatcher.forward(req, resp);
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/driver/dashboard?error=BookingNotFound");
+        }
     }
 }
 

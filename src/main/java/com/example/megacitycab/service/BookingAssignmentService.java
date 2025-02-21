@@ -4,12 +4,16 @@ import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.BookingAssignmentDAO;
 import com.example.megacitycab.dao.BookingAssignmentDAOImpl;
 import com.example.megacitycab.model.Assignment;
+import com.example.megacitycab.service.DriverService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class BookingAssignmentService {
+    private final DriverService driverService = new DriverService();
+    private final VehicleService vehicleService = new VehicleService();
+    private final BookingService bookingService = new BookingService();
     private BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
 
     public boolean createAssignment(Assignment assignment) {
@@ -39,5 +43,14 @@ public class BookingAssignmentService {
         }
 
         return null;
+    }
+
+    public boolean finishRide(Integer bookingId) {
+//        System.out.println("Finish Ride Triggered");
+        Assignment assignment = getAssignmentByBookingId(bookingId);
+        driverService.releaseDriver(assignment.getDriverId());
+        vehicleService.releaseVehicle(assignment.getVehicleId());
+        bookingService.completeBooking(assignment.getBookingId());
+        return true;
     }
 }

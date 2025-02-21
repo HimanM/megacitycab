@@ -73,12 +73,20 @@ public class BookingController extends HttpServlet {
     private void createBooking(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String destinationDetails = req.getParameter("destination");
+            String pickupLocationDetails = req.getParameter("pickupLocation");
             String bookingDateStr = req.getParameter("bookingDate");
             String selectedVehicleIdStr = req.getParameter("vehicleId");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
             if (destinationDetails == null || destinationDetails.isEmpty()) {
                 req.setAttribute("error", "Destination details cannot be empty.");
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
+                dispatcher.forward(req, resp);
+                return;
+            }
+
+            if (pickupLocationDetails == null || pickupLocationDetails.isEmpty()) {
+                req.setAttribute("error", "Pickup Location details cannot be empty.");
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
                 dispatcher.forward(req, resp);
                 return;
@@ -96,6 +104,7 @@ public class BookingController extends HttpServlet {
                 req.setAttribute("fare", totalAmount);
                 req.getSession().setAttribute("calculatedFare", totalAmount);
                 req.setAttribute("destination", destinationDetails);
+                req.setAttribute("pickupLocation", pickupLocationDetails);
                 req.setAttribute("bookingDate", bookingDateStr);
 
                 List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
@@ -127,6 +136,7 @@ public class BookingController extends HttpServlet {
                 booking.setCustomerId(customerId);
                 booking.setOrderNumber("ORD-" + System.currentTimeMillis());
                 booking.setDestinationDetails(destinationDetails);
+                booking.setPickupLocation(pickupLocationDetails);
                 booking.setBookingDate(bookingDate);
                 booking.setTotalAmount(totalAmount);
                 booking.setStatus("Waiting for driver confirmation");
