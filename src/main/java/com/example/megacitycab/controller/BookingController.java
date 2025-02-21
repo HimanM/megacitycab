@@ -1,6 +1,7 @@
 package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.*;
+import com.example.megacitycab.model.combined.RidePayment;
 import com.example.megacitycab.service.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -76,6 +77,9 @@ public class BookingController extends HttpServlet {
             String pickupLocationDetails = req.getParameter("pickupLocation");
             String bookingDateStr = req.getParameter("bookingDate");
             String selectedVehicleIdStr = req.getParameter("vehicleId");
+
+
+            System.out.println(selectedVehicleIdStr);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
             if (destinationDetails == null || destinationDetails.isEmpty()) {
@@ -99,9 +103,15 @@ public class BookingController extends HttpServlet {
             }
 
             if (req.getParameter("calculateFare") != null) {
-                double totalAmount = bookingService.calculateFare(destinationDetails);
-                req.setAttribute("fare", totalAmount);
-                req.getSession().setAttribute("calculatedFare", totalAmount);
+                RidePayment ridePayment = bookingService.calculateFare(destinationDetails, pickupLocationDetails);
+                Vehicle selectedVehicle = vehicleService.getVehicleById(Integer.parseInt(selectedVehicleIdStr));
+
+                req.setAttribute("fare", ridePayment.getTotalAfterTax());
+                req.getSession().setAttribute("calculatedFare", ridePayment.getTotalAfterTax());
+                req.setAttribute("tax", ridePayment.getTax());
+                req.setAttribute("beforeTax", ridePayment.getTotal());
+                req.setAttribute("vehicleId", selectedVehicleIdStr);
+                req.setAttribute("vehicleType", selectedVehicle.getManufacturer() + " - " + selectedVehicle.getModel() + " (Capacity: " + selectedVehicle.getCapacity() + ")");
                 req.setAttribute("destination", destinationDetails);
                 req.setAttribute("pickupLocation", pickupLocationDetails);
                 req.setAttribute("bookingDate", bookingDateStr);
@@ -112,6 +122,9 @@ public class BookingController extends HttpServlet {
             }
             else if (req.getParameter("placeBooking") != null) {
                 if (selectedVehicleIdStr == null || selectedVehicleIdStr.isEmpty()) {
+
+                    System.out.println(selectedVehicleIdStr);
+                    System.out.println("Error here");
                     req.setAttribute("error", "Please select a vehicle.");
                     RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
                     dispatcher.forward(req, resp);
@@ -152,6 +165,7 @@ public class BookingController extends HttpServlet {
                 booking.setPickupLocation(pickupLocationDetails);
                 booking.setBookingDate(bookingDate);
                 booking.setTotalAmount(totalAmount);
+                booking.setStatus("PENDING");
 
                 boolean success = bookingService.createBooking(booking);
                 if (success) {

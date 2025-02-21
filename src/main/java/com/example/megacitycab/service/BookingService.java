@@ -5,6 +5,7 @@ import com.example.megacitycab.dao.BookingDAOImpl;
 import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.combined.BookingDetails;
+import com.example.megacitycab.model.combined.RidePayment;
 
 import java.util.List;
 import java.util.Random;
@@ -38,9 +39,16 @@ public class BookingService {
 
     private static final Random random = new Random();
 
-    public double calculateFare(String destination) {
+    public RidePayment calculateFare(String destination, String pickupLocation) {
         // Generate a random fare between $10 and $100
-        return 10 + (90 * random.nextDouble());
+        RidePayment ridePayment = new RidePayment();
+        double fare = 10 + (90 * random.nextDouble());
+        double tax = 0.15 * fare;
+        double totalAmount = fare + tax;
+        ridePayment.setTotalAfterTax(totalAmount);
+        ridePayment.setTax(tax);
+        ridePayment.setTotal(fare);
+        return ridePayment;
     }
 
 

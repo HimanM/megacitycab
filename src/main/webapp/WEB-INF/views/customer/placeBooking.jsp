@@ -5,10 +5,13 @@
 
 <%
     Double fare = (Double) request.getAttribute("fare");
-    String status = (String) request.getAttribute("status");
+    Double tax = (Double) request.getAttribute("tax");
+    Double totalBeforeTax = (Double) request.getAttribute("beforeTax");
     String destination = request.getAttribute("destination") != null ? request.getAttribute("destination").toString() : "";
     String bookingDate = request.getAttribute("bookingDate") != null ? request.getAttribute("bookingDate").toString() : "";
     String pickupLocation = request.getAttribute("pickupLocation") != null ? request.getAttribute("pickupLocation").toString() : "";
+    String vehicleId= request.getAttribute("vehicleId") != null ? request.getAttribute("vehicleId").toString() : "";
+    String vehicleType = request.getAttribute("vehicleType") != null ? request.getAttribute("vehicleType").toString() : "Choose a vehicle";
     Booking booking = (Booking) request.getAttribute("booking");
     boolean fareCalculated = fare != null;
     Boolean activeBooking = (Boolean) request.getAttribute("activeBooking");
@@ -46,7 +49,7 @@
             modal.show();
         }
         function showNoDriversMessage() {
-            let modal = new bootstrap.Modal(document.getElementById("noDriversModal"));
+            let modal = new bootstrap.Modal(document.getElementById("noDriverFoundModal"));
             modal.show();
         }
 
@@ -94,9 +97,10 @@
         </div>
     </div>
 </div>
-<div class="container">
-    <h2 class="text-center mb-4">Place a Booking</h2>
 
+<div class="container">
+    <% if (booking == null) { %>
+    <h2 class="text-center mb-4">Place a Booking</h2>
     <form action="<%= request.getContextPath() %>/customer/booking/placeBooking" method="post">
         <div class="mb-3">
             <label for="destination" class="form-label">Destination</label>
@@ -114,21 +118,25 @@
         </div>
 
         <div class="mb-3">
-            <label for="vehicleType" class="form-label">Select Vehicle</label>
-            <select class="form-select" id="vehicleType" name="vehicleId" required>
-                <option value="" disabled selected>Choose a vehicle</option>
+            <label for="vehicleId" class="form-label">Select Vehicle</label>
+            <select class="form-select" id="vehicleId" name="vehicleId" required>
+                <% if (!fareCalculated) { %>
+                <option value="" disabled selected><%=vehicleType %></option>
                 <%
                     List<Vehicle> vehicles = (List<Vehicle>) request.getAttribute("availableVehicles");
                     if (vehicles != null) {
                         for (Vehicle v : vehicles) {
-                %>
-                <option value="<%= v.getId() %>">
-                    <%= v.getManufacturer() %> - <%= v.getModel() %> (Capacity: <%= v.getCapacity() %>)
-                </option>
-                <%
+                            %>
+                            <option value="<%= v.getId() %>">
+                                <%= v.getManufacturer() %> - <%= v.getModel() %> (Capacity: <%= v.getCapacity() %>)
+                            </option>
+                            <%
                         }
                     }
                 %>
+                <% } else { %>
+                <option value="<%= vehicleId %>" selected><%=vehicleType %></option>
+                <% } %>
             </select>
         </div>
 
@@ -136,10 +144,35 @@
 
         <% if (fareCalculated) { %>
 
-        <div class="mb-3">
-            <label class="form-label">Estimated Fare</label>
-            <input type="text" class="form-control" value="$<%= String.format("%.2f", fare) %>" disabled>
+<%--        Amount Display Container--%>
+        <div class="card p-3 shadow-sm">
+            <h5 class="card-title text-center mb-3">Fare Breakdown</h5>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Estimated Fare</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control" value="<%= String.format("%.2f", totalBeforeTax) %>" disabled>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tax (15%)</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control" value="<%= String.format("%.2f", tax) %>" disabled>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Estimated Fare After Tax</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control text-success fw-bold" value="<%= String.format("%.2f", fare) %>" disabled>
+                </div>
+            </div>
         </div>
+        <%--        Amount Display Container End --%>
 
         <div class="mb-3">
             <label for="cardNumber" class="form-label">Credit Card Number</label>
@@ -164,6 +197,7 @@
         <button type="submit" name="placeBooking" class="btn btn-primary">Place Booking</button>
         <% } %>
     </form>
+    <% } %>
 
     <% if (booking != null) { %>
     <div class="alert mt-4 alert-warning rounded shadow p-4">
@@ -176,7 +210,7 @@
             </div>
             <div>
                 <p class="mb-1"><i class="fas fa-dollar-sign me-2"></i>Price:</p>
-                <p class="fw-bold"><%= booking.getTotalAmount() %></p>
+                <p class="fw-bold"><%= String.format("%.2f", booking.getTotalAmount()) %></p>
             </div>
         </div>
         <hr>
