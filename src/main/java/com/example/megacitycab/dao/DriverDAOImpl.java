@@ -1,17 +1,16 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.DriverDAO;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
-import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.CustomerService;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverDAOimpl implements DriverDAO {
-
+public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public boolean addDriver(Driver driver) {
@@ -37,7 +36,7 @@ public class DriverDAOimpl implements DriverDAO {
 
     @Override
     public boolean deleteDriver(int driverId) {
-        String query = "DELETE FROM drivers WHERE id = ?";
+        String query = "UPDATE drivers SET verified = 'NO', status = 'Inactive' WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -128,6 +127,7 @@ public class DriverDAOimpl implements DriverDAO {
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Driver driver = mapDriver(resultSet);
+
                 drivers.add(driver);
             }
         } catch (SQLException e) {
@@ -143,12 +143,19 @@ public class DriverDAOimpl implements DriverDAO {
 
 
     private Driver mapDriver(ResultSet resultSet) throws SQLException {
+        UserDAOImpl userDAO = new UserDAOImpl();
+
         Driver driver = new Driver();
+        User user = new User();
+        user = userDAO.getUserById(resultSet.getInt("user_id"));
+        driver.setName(user.getName());
+        driver.setPhoneNumber(user.getPhone());
         driver.setId(resultSet.getInt("id"));
         driver.setUserId(resultSet.getInt("user_id"));
         driver.setLicenseNumber(resultSet.getString("license_number"));
         driver.setVerified(resultSet.getString("verified"));
         driver.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
+        driver.setStatus(resultSet.getString("status"));
         return driver;
     }
 }

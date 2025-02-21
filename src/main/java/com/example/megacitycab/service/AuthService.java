@@ -1,18 +1,16 @@
 package com.example.megacitycab.service;
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.dao.UserDAO;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.dao.UserDAOImpl;
 import com.example.megacitycab.exceptions.UserException;
 import com.example.megacitycab.model.User;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import static com.example.megacitycab.util.HashPassword.hashPassword;
 

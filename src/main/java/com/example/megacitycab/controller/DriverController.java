@@ -2,8 +2,7 @@ package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.BookingDetails;
-import com.example.megacitycab.model.Driver;
+import com.example.megacitycab.model.combined.BookingDetails;
 import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
@@ -17,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @WebServlet("/driver/dashboard/*")
@@ -50,6 +48,15 @@ public class DriverController extends HttpServlet {
         switch (action) {
             case "/finish":
                 finishRide(req, resp);
+                break;
+            case "/cancel":
+                try {
+                    int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+                    cancelBooking(bookingId);
+                } catch (NumberFormatException e) {
+                    resp.sendRedirect(req.getContextPath() + "/driver/dashboard?error=InvalidBookingId");
+                    return;
+                }
                 break;
             default:
 
@@ -85,10 +92,7 @@ public class DriverController extends HttpServlet {
                 bookingService.acceptBooking(bookingId, driverId);
                 initDetailsPage(bookingId, req, resp);
             } else if (action.equals("/cancel")) {
-                Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
-                driverService.releaseDriver(assignment.getDriverId());
-                vehicleService.releaseVehicle(assignment.getVehicleId());
-                bookingService.cancelBooking(bookingId);
+                cancelBooking(bookingId);
             } else if (action.equals("/details")) {
                 initDetailsPage(bookingId, req, resp);
             }
@@ -113,6 +117,13 @@ public class DriverController extends HttpServlet {
         } else {
             resp.sendRedirect(req.getContextPath() + "/driver/dashboard?error=BookingNotFound");
         }
+    }
+
+    private void cancelBooking (Integer bookingId) {
+        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        driverService.releaseDriver(assignment.getDriverId());
+        vehicleService.releaseVehicle(assignment.getVehicleId());
+        bookingService.cancelBooking(bookingId);
     }
 }
 

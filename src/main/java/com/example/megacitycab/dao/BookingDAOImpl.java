@@ -1,11 +1,11 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.BookingDAO;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.BookingDetails;
+import com.example.megacitycab.model.combined.BookingDetails;
 import com.example.megacitycab.model.Vehicle;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;

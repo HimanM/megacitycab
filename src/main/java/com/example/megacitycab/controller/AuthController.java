@@ -1,12 +1,11 @@
 package com.example.megacitycab.controller;
 
-import com.example.megacitycab.dao.DriverDAO;
-import com.example.megacitycab.dao.DriverDAOimpl;
+import com.example.megacitycab.dao.Interfaces.DriverDAO;
+import com.example.megacitycab.dao.DriverDAOImpl;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.service.AuthService;
 import com.example.megacitycab.service.CustomerService;
-import com.example.megacitycab.util.HashPassword;
 import com.example.megacitycab.util.ValidationUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -26,7 +25,7 @@ import java.util.List;
 public class AuthController extends HttpServlet {
     private CustomerService customerService;
 
-    DriverDAO driverDAO = new DriverDAOimpl(); // Default implementation
+    DriverDAO driverDAO = new DriverDAOImpl(); // Default implementation
 
 
     @Override

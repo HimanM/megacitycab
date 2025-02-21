@@ -1,6 +1,6 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.PaymentDAO;
+import com.example.megacitycab.dao.Interfaces.PaymentDAO;
 import com.example.megacitycab.dao.PaymentDAOImpl;
 import com.example.megacitycab.model.Payment;
 

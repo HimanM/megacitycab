@@ -1,6 +1,7 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.VehicleDAO;
 import com.example.megacitycab.model.Vehicle;
 
 import java.sql.*;
@@ -164,5 +165,71 @@ public class VehicleDAOImpl implements VehicleDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Vehicle> getAssignedVehicles() {
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "SELECT * FROM vehicles WHERE status = 'Assigned'";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                vehicles.add(new Vehicle(
+                        rs.getInt("id"),
+                        rs.getString("vehicle_type"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getString("manufacturer"),
+                        rs.getInt("year"),
+                        rs.getInt("capacity")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicles;
+    }
+
+    @Override
+    public boolean updateVehicleStatus(Integer vehicleId, String newStatus) {
+        String query = "UPDATE vehicles SET status = ? WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, newStatus);
+            statement.setInt(2, vehicleId);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<Vehicle> getMaintenanceVehicles() {
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "SELECT * FROM vehicles WHERE status = 'In Maintenance'";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                vehicles.add(new Vehicle(
+                        rs.getInt("id"),
+                        rs.getString("vehicle_type"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getString("manufacturer"),
+                        rs.getInt("year"),
+                        rs.getInt("capacity")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicles;
     }
 }

@@ -10,6 +10,7 @@ public class Payment {
     private String expiryDate;
     private String cvv;
     private String status;
+    private String paymentDate;
 
     public int getId() {
         return id;
@@ -82,5 +83,13 @@ public class Payment {
 
     public void setCardHolderName(String cardHolderName) {
         this.cardHolderName = cardHolderName;
+    }
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
     }
 }

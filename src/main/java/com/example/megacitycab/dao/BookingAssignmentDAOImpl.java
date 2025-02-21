@@ -1,6 +1,7 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.BookingAssignmentDAO;
 import com.example.megacitycab.model.Assignment;
 
 import java.sql.Connection;

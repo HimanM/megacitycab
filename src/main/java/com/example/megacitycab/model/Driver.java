@@ -10,6 +10,7 @@ public class Driver {
     private String verified;
     private LocalDateTime createdAt;
     private int userId;
+    private String status;
 
     public Driver() {}
 
@@ -20,7 +21,8 @@ public class Driver {
         this.licenseNumber = licenseNumber;
         this.verified = verified;
         this.createdAt = createdAt;
-        this.userId = 0; // Default value for userId
+        this.userId = 0;
+        this.status = "Available"; // Default value for userId
     }
 
     // Getters and Setters
@@ -50,4 +52,11 @@ public class Driver {
         this.userId = userId;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

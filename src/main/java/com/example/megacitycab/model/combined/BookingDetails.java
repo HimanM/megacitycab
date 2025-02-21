@@ -1,4 +1,7 @@
-package com.example.megacitycab.model;
+package com.example.megacitycab.model.combined;
+
+import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.model.Vehicle;
 
 public class BookingDetails {
     private Booking booking;

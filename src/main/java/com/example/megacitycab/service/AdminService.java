@@ -1,7 +1,7 @@
 package com.example.megacitycab.service;
 
 
-import com.example.megacitycab.dao.AdminDAO;
+import com.example.megacitycab.dao.Interfaces.AdminDAO;
 import com.example.megacitycab.dao.AdminDAOImpl;
 import com.example.megacitycab.exceptions.AdminException;
 import com.example.megacitycab.model.Admin;

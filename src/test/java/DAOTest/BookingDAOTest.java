@@ -1,6 +1,6 @@
 //package DAOTest;
 //
-//import com.example.megacitycab.dao.BookingDAO;
+//import com.example.megacitycab.dao.Interfaces.BookingDAO;
 //import com.example.megacitycab.dao.BookingDAOImpl;
 //import com.example.megacitycab.model.Booking;
 //

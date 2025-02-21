@@ -1,7 +1,7 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.model.User;
 
 import java.security.NoSuchAlgorithmException;

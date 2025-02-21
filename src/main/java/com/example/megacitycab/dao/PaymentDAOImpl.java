@@ -1,12 +1,11 @@
 package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.dao.Interfaces.PaymentDAO;
 import com.example.megacitycab.model.Payment;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,7 @@ public class PaymentDAOImpl implements PaymentDAO {
         payment.setExpiryDate(rs.getString("expiry_date"));
         payment.setCvv(rs.getString("cvv"));
         payment.setStatus(rs.getString("status"));
+        payment.setPaymentDate(rs.getString("payment_date"));
         return payment;
     }
 }

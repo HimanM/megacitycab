@@ -1,6 +1,6 @@
 //package ServiceTest;
 //
-//import com.example.megacitycab.dao.BookingDAO;
+//import com.example.megacitycab.dao.Interfaces.BookingDAO;
 //import com.example.megacitycab.exceptions.BookingException;
 //import com.example.megacitycab.model.Booking;
 //import com.example.megacitycab.service.BookingService;

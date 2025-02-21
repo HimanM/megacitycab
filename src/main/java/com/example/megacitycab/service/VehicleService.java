@@ -1,6 +1,6 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.VehicleDAO;
+import com.example.megacitycab.dao.Interfaces.VehicleDAO;
 import com.example.megacitycab.dao.VehicleDAOImpl;
 import com.example.megacitycab.exceptions.VehicleException;
 import com.example.megacitycab.model.Vehicle;
@@ -85,4 +85,15 @@ public class VehicleService {
         vehicleDAO.assignVehicle(vehicleId);
     }
 
+    public List<Vehicle> getAssignedVehicles() {
+        return vehicleDAO.getAssignedVehicles();
+    }
+
+    public boolean updateVehicleStatus(Integer vehicleId, String newStatus) {
+        return vehicleDAO.updateVehicleStatus(vehicleId, newStatus);
+    }
+
+    public List<Vehicle> getMaintenanceVehicles() {
+        return vehicleDAO.getMaintenanceVehicles();
+    }
 }

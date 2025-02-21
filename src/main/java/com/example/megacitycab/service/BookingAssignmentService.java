@@ -1,10 +1,9 @@
 package com.example.megacitycab.service;
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.dao.BookingAssignmentDAO;
+import com.example.megacitycab.dao.Interfaces.BookingAssignmentDAO;
 import com.example.megacitycab.dao.BookingAssignmentDAOImpl;
 import com.example.megacitycab.model.Assignment;
-import com.example.megacitycab.service.DriverService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,4 +52,5 @@ public class BookingAssignmentService {
         bookingService.completeBooking(assignment.getBookingId());
         return true;
     }
+
 }

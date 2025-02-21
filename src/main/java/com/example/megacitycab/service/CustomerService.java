@@ -1,6 +1,6 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.UserDAO;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.dao.UserDAOImpl;
 import com.example.megacitycab.exceptions.UserException;
 import com.example.megacitycab.model.User;

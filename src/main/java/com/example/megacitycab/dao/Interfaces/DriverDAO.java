@@ -1,4 +1,4 @@
-package com.example.megacitycab.dao;
+package com.example.megacitycab.dao.Interfaces;
 
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;

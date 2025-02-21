@@ -1,6 +1,6 @@
 package DAOTest;
 
-import com.example.megacitycab.dao.AdminDAO;
+import com.example.megacitycab.dao.Interfaces.AdminDAO;
 import com.example.megacitycab.dao.AdminDAOImpl;
 import com.example.megacitycab.model.Admin;
 

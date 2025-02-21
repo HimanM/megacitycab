@@ -2,8 +2,8 @@ package com.example.megacitycab.service;
 
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.dao.DriverDAO;
-import com.example.megacitycab.dao.DriverDAOimpl;
+import com.example.megacitycab.dao.Interfaces.DriverDAO;
+import com.example.megacitycab.dao.DriverDAOImpl;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 
@@ -17,36 +17,35 @@ public class DriverService {
     private final DriverDAO driverDAO;
 
     public DriverService() {
-        this.driverDAO = new DriverDAOimpl(); // Default implementation
+        this.driverDAO = new DriverDAOImpl(); // Default implementation
     }
 
-//    public DriverService(DriverDAO driverDAO) {
-//        this.driverDAO = driverDAO; // Allow dependency injection for testing or customization
-public int getAndAssignAvailableDriver() {
-    String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' AND verified = 'Yes' ORDER BY id ASC";
-    String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
 
-    try (Connection connection = DatabaseConnection.getConnection();
-         PreparedStatement selectStmt = connection.prepareStatement(SELECT_AVAILABLE_DRIVER);
-         PreparedStatement updateStmt = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+    public int getAndAssignAvailableDriver() {
+        String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' AND verified = 'Yes' ORDER BY id ASC";
+        String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
 
-        ResultSet resultSet = selectStmt.executeQuery();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement selectStmt = connection.prepareStatement(SELECT_AVAILABLE_DRIVER);
+             PreparedStatement updateStmt = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
 
-        if (resultSet.next()) {
-            int driverId = resultSet.getInt("id");
+            ResultSet resultSet = selectStmt.executeQuery();
 
-            // Mark the driver as busy to prevent duplicate assignments
-            updateStmt.setInt(1, driverId);
-            updateStmt.executeUpdate();
+            if (resultSet.next()) {
+                int driverId = resultSet.getInt("id");
 
-            return driverId;
+                // Mark the driver as busy to prevent duplicate assignments
+                updateStmt.setInt(1, driverId);
+                updateStmt.executeUpdate();
+
+                return driverId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
 
-    return -1; // No available driver found
-}
+        return -1; // No available driver found
+    }
 
 
 
@@ -93,5 +92,17 @@ public int getAndAssignAvailableDriver() {
 
     public List<Driver> getUnverifiedDrivers() {
         return driverDAO.getUnverifiedDrivers();
+    }
+
+    public List<Driver> getAllDrivers() {
+        return driverDAO.getAllDrivers();
+    }
+
+    public void verifyDriver(int driverId) {
+        driverDAO.verifyDriver(driverId);
+    }
+
+    public void removeDriver(int driverId) {
+        driverDAO.deleteDriver(driverId);
     }
 }
