@@ -81,6 +81,23 @@ public class DriverDAOimpl implements DriverDAO {
         return -1;
     }
 
+    @Override
+    public List<Driver> getUnverifiedDrivers() {
+        String query = "SELECT * FROM drivers WHERE verified = No";
+        List<Driver> drivers = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Driver driver = mapDriver(resultSet);
+                drivers.add(driver);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return drivers;
+    }
+
     //to be fixed
     @Override
     public User getDriverById(int driverId) {
@@ -104,7 +121,18 @@ public class DriverDAOimpl implements DriverDAO {
 
     @Override
     public List<Driver> getAllDrivers() {
+        String query = "SELECT * FROM drivers";
         List<Driver> drivers = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Driver driver = mapDriver(resultSet);
+                drivers.add(driver);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return drivers;
     }
 
@@ -112,4 +140,16 @@ public class DriverDAOimpl implements DriverDAO {
     public boolean updateDriver(Driver driver) {
         return false;
     }
+
+
+    private Driver mapDriver(ResultSet resultSet) throws SQLException {
+        Driver driver = new Driver();
+        driver.setId(resultSet.getInt("id"));
+        driver.setUserId(resultSet.getInt("user_id"));
+        driver.setLicenseNumber(resultSet.getString("license_number"));
+        driver.setVerified(resultSet.getString("verified"));
+        driver.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
+        return driver;
+    }
 }
+

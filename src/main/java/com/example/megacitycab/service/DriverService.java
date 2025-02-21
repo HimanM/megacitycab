@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DriverService {
     private final DriverDAO driverDAO;
@@ -88,5 +89,9 @@ public int getAndAssignAvailableDriver() {
 
     public Integer getDriverIdByUserId(Integer userId) {
         return driverDAO.getDriverIdByUserId(userId);
+    }
+
+    public List<Driver> getUnverifiedDrivers() {
+        return driverDAO.getUnverifiedDrivers();
     }
 }

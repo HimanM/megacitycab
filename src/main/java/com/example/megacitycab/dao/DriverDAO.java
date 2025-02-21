@@ -13,4 +13,5 @@ public interface DriverDAO {
     boolean deleteDriver(int driverId);
     boolean verifyDriver(int driverId);
     Integer getDriverIdByUserId(Integer userId);
+    List<Driver> getUnverifiedDrivers();
 }

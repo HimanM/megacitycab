@@ -1,10 +1,7 @@
 package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.*;
-import com.example.megacitycab.service.BookingAssignmentService;
-import com.example.megacitycab.service.BookingService;
-import com.example.megacitycab.service.DriverService;
-import com.example.megacitycab.service.VehicleService;
+import com.example.megacitycab.service.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,6 +20,8 @@ public class BookingController extends HttpServlet {
     private final BookingService bookingService = new BookingService();
     private final VehicleService vehicleService = new VehicleService();
     private final DriverService driverService = new DriverService();
+    private final PaymentService paymentService = new PaymentService();
+    private final CustomerService customerService = new CustomerService();
     private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
 
 
@@ -70,6 +69,7 @@ public class BookingController extends HttpServlet {
         }
     }
 
+
     private void createBooking(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String destinationDetails = req.getParameter("destination");
@@ -98,7 +98,6 @@ public class BookingController extends HttpServlet {
                 return;
             }
 
-
             if (req.getParameter("calculateFare") != null) {
                 double totalAmount = bookingService.calculateFare(destinationDetails);
                 req.setAttribute("fare", totalAmount);
@@ -123,6 +122,20 @@ public class BookingController extends HttpServlet {
                 LocalDateTime bookingDate = LocalDateTime.parse(bookingDateStr, formatter);
                 double totalAmount = (double) req.getSession().getAttribute("calculatedFare");
 
+                // Retrieve Credit Card Details
+                String cardNumber = req.getParameter("cardNumber");
+                String expiryDate = req.getParameter("expiryDate");
+                String cvv = req.getParameter("cvv");
+
+                // Validate credit card fields
+                if (cardNumber == null || expiryDate == null || cvv == null ||
+                        cardNumber.length() != 16 || cvv.length() != 3) {
+                    req.setAttribute("error", "Invalid credit card details.");
+                    RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
+                    dispatcher.forward(req, resp);
+                    return;
+                }
+
                 // Assign an available driver
                 Integer driverId = driverService.getAndAssignAvailableDriver();
                 if (driverId == -1) {
@@ -139,7 +152,6 @@ public class BookingController extends HttpServlet {
                 booking.setPickupLocation(pickupLocationDetails);
                 booking.setBookingDate(bookingDate);
                 booking.setTotalAmount(totalAmount);
-                booking.setStatus("Waiting for driver confirmation");
 
                 boolean success = bookingService.createBooking(booking);
                 if (success) {
@@ -155,6 +167,22 @@ public class BookingController extends HttpServlet {
                         req.setAttribute("error", "Booking placed, but driver assignment failed.");
                     }
                     vehicleService.assignVehicle(selectedVehicleId);
+
+                    // Insert into Payment Table
+                    Payment payment = new Payment();
+                    payment.setBookingId(booking.getId());
+                    payment.setCustomerId(customerId);
+                    payment.setAmount(totalAmount);
+                    payment.setCardHolderName(customerService.getCustomerById(customerId).getName());
+                    payment.setCardNumber(cardNumber);
+                    payment.setExpiryDate(expiryDate);
+                    payment.setCvv(cvv);
+                    payment.setStatus("Completed");
+
+                    boolean paymentSuccess = paymentService.processPayment(payment);
+                    if (!paymentSuccess) {
+                        req.setAttribute("error", "Payment failed. Please try again.");
+                    }
 
                     req.setAttribute("booking", booking);
                     req.setAttribute("status", booking.getStatus());

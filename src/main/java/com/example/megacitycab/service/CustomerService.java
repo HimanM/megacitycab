@@ -95,4 +95,5 @@ public class CustomerService {
     public boolean isEmailAlreadyRegistered(String email) {
         return UserDAO.getUserByEmail(email) != null;
     }
+
 }

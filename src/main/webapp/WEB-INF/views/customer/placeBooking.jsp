@@ -132,11 +132,30 @@
             </select>
         </div>
 
+
+
         <% if (fareCalculated) { %>
+
         <div class="mb-3">
             <label class="form-label">Estimated Fare</label>
             <input type="text" class="form-control" value="$<%= String.format("%.2f", fare) %>" disabled>
         </div>
+
+        <div class="mb-3">
+            <label for="cardNumber" class="form-label">Credit Card Number</label>
+            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required pattern="\d{16}" placeholder="Enter 16-digit card number">
+        </div>
+
+        <div class="mb-3">
+            <label for="expiryDate" class="form-label">Expiration Date</label>
+            <input type="month" class="form-control" id="expiryDate" name="expiryDate" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="cvv" class="form-label">CVV</label>
+            <input type="text" class="form-control" id="cvv" name="cvv" required pattern="\d{3}" placeholder="Enter 3-digit CVV">
+        </div>
+
         <% } %>
 
         <% if (!fareCalculated) { %>

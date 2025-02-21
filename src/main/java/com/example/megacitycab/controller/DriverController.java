@@ -1,11 +1,13 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.BookingDetails;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
+import com.example.megacitycab.service.VehicleService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,6 +25,7 @@ public class DriverController extends HttpServlet {
     private final DriverService driverService = new DriverService();
     private final BookingService bookingService = new BookingService();
     private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
+    private final VehicleService vehicleService = new VehicleService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,6 +85,9 @@ public class DriverController extends HttpServlet {
                 bookingService.acceptBooking(bookingId, driverId);
                 initDetailsPage(bookingId, req, resp);
             } else if (action.equals("/cancel")) {
+                Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+                driverService.releaseDriver(assignment.getDriverId());
+                vehicleService.releaseVehicle(assignment.getVehicleId());
                 bookingService.cancelBooking(bookingId);
             } else if (action.equals("/details")) {
                 initDetailsPage(bookingId, req, resp);

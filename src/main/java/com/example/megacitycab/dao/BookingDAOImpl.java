@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class BookingDAOImpl implements BookingDAO {
 
-    private static final String INSERT_BOOKING = "INSERT INTO bookings (order_number, customer_id, destination_details, booking_date, total_amount, status) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_BOOKING = "INSERT INTO bookings (order_number, customer_id, destination_details, pickup_location, booking_date, total_amount, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_BOOKING_BY_ID = "SELECT * FROM bookings WHERE id = ?";
     private static final String SELECT_ALL_BOOKINGS = "SELECT * FROM bookings";
     private static final String SELECT_BOOKINGS_BY_CUSTOMER_ID = "SELECT * FROM bookings WHERE customer_id = ?";
@@ -30,9 +30,10 @@ public class BookingDAOImpl implements BookingDAO {
             statement.setString(1, booking.getOrderNumber());
             statement.setInt(2, booking.getCustomerId());
             statement.setString(3, booking.getDestinationDetails());
-            statement.setTimestamp(4, Timestamp.valueOf(booking.getBookingDate()));
-            statement.setDouble(5, booking.getTotalAmount());
-            statement.setString(6, "PENDING");
+            statement.setString(4, booking.getPickupLocation());
+            statement.setTimestamp(5, Timestamp.valueOf(booking.getBookingDate()));
+            statement.setDouble(6, booking.getTotalAmount());
+            statement.setString(7, "PENDING");
 
             statement.executeUpdate();
 
