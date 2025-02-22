@@ -1,7 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.example.megacitycab.model.Booking" %>
 <%@ page import="com.example.megacitycab.model.Vehicle" %>
 <%@ page import="java.util.List" %>
+<%@ include file="../shared/customer_navbar.jsp" %>
 
 <%
     Double fare = (Double) request.getAttribute("fare");

@@ -3,6 +3,7 @@ package com.example.megacitycab.controller;
 import com.example.megacitycab.model.*;
 import com.example.megacitycab.model.combined.RidePayment;
 import com.example.megacitycab.service.*;
+import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,9 +16,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@WebServlet("/customer/booking/*")
+@WebServlet("/customer/*")
 public class BookingController extends HttpServlet {
-
     private final BookingService bookingService = new BookingService();
     private final VehicleService vehicleService = new VehicleService();
     private final DriverService driverService = new DriverService();
@@ -37,21 +37,29 @@ public class BookingController extends HttpServlet {
         }
 
         switch (action) {
-            case "/placeBooking":
+            case "/booking/placeBooking":
                 initPlaceBooking(req, resp);
                 break;
-            case "/viewBookings":
+            case "/booking/viewBookings":
                 viewBookings(req, resp);
                 break;
-            case "/details":
+            case "/booking/details":
                 viewBookingDetails(req, resp);
                 break;
-            case "/cancel":
+            case "/booking/cancel":
                 cancelBooking(req, resp);
                 break;
+            case "/dashboard":
+                viewDashboard(req, resp);
+                break;
             default:
-                resp.sendRedirect(req.getContextPath() + "/WEB-INF/views/customer/dashboard.jsp");
+                viewDashboard(req, resp);
         }
+    }
+
+    private void viewDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/dashboard.jsp");
+        dispatcher.forward(req, resp);
     }
 
     @Override
@@ -59,10 +67,10 @@ public class BookingController extends HttpServlet {
         String action = req.getPathInfo();
 
         switch (action) {
-            case "/placeBooking":
+            case "/booking/placeBooking":
                 createBooking(req, resp);
                 break;
-            case "/cancel":
+            case "/booking//cancel":
                 deleteBooking(req, resp);
                 break;
             default:

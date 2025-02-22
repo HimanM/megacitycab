@@ -1,6 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.example.megacitycab.model.Booking, java.util.List, java.time.format.DateTimeFormatter" %>
-
+<%@ include file="../shared/customer_navbar.jsp" %>
 <%
   List<Booking> activeBookings = (List<Booking>) request.getAttribute("activeBookings");
   List<Booking> previousBookings = (List<Booking>) request.getAttribute("previousBookings");

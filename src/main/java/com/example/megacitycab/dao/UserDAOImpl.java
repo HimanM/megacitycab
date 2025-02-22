@@ -87,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String query = "UPDATE users SET password =  ?, name = ?, address = ?, nic = ?, phone = ?, role = ?, email = ?, WHERE id = ?";
+        String query = "UPDATE users SET password =  ?, name = ?, address = ?, nic = ?, phone = ?, role = ?, email = ? WHERE id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

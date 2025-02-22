@@ -1,6 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ include file="../shared/driver_navbar.jsp" %>
 <%
     Boolean finishRide = (Boolean) request.getAttribute("rideComplete");
 %>
@@ -9,7 +9,6 @@
 <html lang="en">
 <head>
     <title>Driver Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script>
         function showFinishRideMessage() {
@@ -23,21 +22,6 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Driver Dashboard</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
 <!-- Ride Finished Modal -->
 <div class="modal fade" id="finishRideModel" tabindex="-1" aria-labelledby="finishRideModelLabel" aria-hidden="true">

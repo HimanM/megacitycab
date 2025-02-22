@@ -1,5 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="../shared/customer_navbar.jsp" %>
 
 
 <!DOCTYPE html>
@@ -9,30 +10,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Customer Dashboard</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/booking/placeBooking">Place Booking</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/booking/viewBookings">View Bookings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/customer/availableVehicles">Available Vehicles</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
 <div class="container mt-4">
     <h1>Welcome, ${sessionScope.username}!</h1>

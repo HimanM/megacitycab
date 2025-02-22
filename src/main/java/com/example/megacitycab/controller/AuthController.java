@@ -89,7 +89,8 @@ public class AuthController extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("userId", customer.getId());
             session.setAttribute("username", customer.getUsername());
-            System.out.println("Role: " + customer.getRole());
+            session.setAttribute("role", customer.getRole());
+//            System.out.println("Role: " + customer.getRole());
             if(customer.getRole().equals("Driver")){
                 resp.sendRedirect(req.getContextPath() + "/driver/dashboard");
             } else if (customer.getRole().equals("Admin")){

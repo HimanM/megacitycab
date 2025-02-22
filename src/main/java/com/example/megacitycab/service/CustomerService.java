@@ -36,7 +36,7 @@ public class CustomerService {
     }
 
     // Update customer details
-    public void updateCustomer(User updatedCustomer) throws UserException {
+    public boolean updateCustomer(User updatedCustomer) throws UserException {
         try {
             if (updatedCustomer == null) {
                 throw new UserException("Updated customer data cannot be null");
@@ -46,6 +46,7 @@ public class CustomerService {
         } catch (Exception e) {
             throw new UserException("Error while updating customer details", e);
         }
+        return false;
     }
 
     // Fetch a customer by ID
