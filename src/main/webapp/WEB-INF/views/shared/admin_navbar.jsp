@@ -27,6 +27,9 @@
         <li class="nav-item">
           <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard/manageVehicles">Vehicles</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/help">Get Help</a>
+        </li>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item">
