@@ -3,7 +3,8 @@ package com.example.megacitycab.service;
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.dao.UserDAOImpl;
-import com.example.megacitycab.exceptions.UserException;
+import com.example.megacitycab.exceptions.AuthException;
+import com.example.megacitycab.exceptions.CustomerException;
 import com.example.megacitycab.model.User;
 
 import java.security.NoSuchAlgorithmException;
@@ -20,19 +21,17 @@ public class AuthService {
     public static User authenticate(String username, String password) {
         try {
             User user = userDAO.getUserByUsername(username);
-            // Verify password (assuming hashed passwords)
             if (user != null && verifyPassword(username, password)) {
                 return user;
             } else {
                 return null;
-                //throw new UserException("Invalid username or password.");
             }
         } catch (Exception e) {
-            throw new UserException("Authentication failed: " + e.getMessage(), e);
+            throw new CustomerException("Authentication failed: " + e.getMessage(), e);
         }
     }
 
-    public static boolean verifyPassword(String username, String inputPassword) throws SQLException, NoSuchAlgorithmException {
+    public static boolean verifyPassword(String username, String inputPassword) throws SQLException, NoSuchAlgorithmException, AuthException {
         String query = "SELECT password FROM users WHERE username = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
