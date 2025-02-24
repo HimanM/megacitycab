@@ -7,6 +7,7 @@ import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
 import com.example.megacitycab.service.VehicleService;
+import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,28 +22,14 @@ import java.util.List;
 @WebServlet("/driver/dashboard/*")
 public class DriverController extends HttpServlet {
     private final DriverService driverService = new DriverService();
+    private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
     private final BookingService bookingService = new BookingService();
     private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
     private final VehicleService vehicleService = new VehicleService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
-        Integer driverId = driverService.getDriverIdByUserId(userId);
-
-        if (driverId == null) {
-            resp.sendRedirect(req.getContextPath() + "/auth/login");
-            return;
-        }
-
-        // Fetch assigned bookings
-        List<Booking> assignedBookings = bookingService.getAssignedBookings(driverId);
-        req.setAttribute("assignedBookings", assignedBookings);
-
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/driver/dashboard.jsp");
-        dispatcher.forward(req, resp);
-
+        initDashboard(req, resp);
 
         String action = req.getPathInfo();
         switch (action) {
@@ -61,11 +48,6 @@ public class DriverController extends HttpServlet {
             default:
 
         }
-    }
-
-    private void forward(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher(path);
-        dispatcher.forward(req, resp);
     }
 
         @Override
@@ -92,17 +74,35 @@ public class DriverController extends HttpServlet {
                 bookingService.acceptBooking(bookingId, driverId);
                 initDetailsPage(bookingId, req, resp);
             } else if (action.equals("/cancel")) {
-                cancelBooking(bookingId);
+                cancelAndAssignBooking(bookingId);
             } else if (action.equals("/details")) {
                 initDetailsPage(bookingId, req, resp);
             }
             resp.sendRedirect(req.getContextPath() + "/driver/dashboard");
     }
 
-    private void finishRide(HttpServletRequest req, HttpServletResponse resp) {
+    private void cancelAndAssignBooking(Integer bookingId) {
+        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        int currentDriverId = assignment.getDriverId();
+        driverService.releaseDriver(currentDriverId);
+        int newDriverId = driverService.getAndAssignAvailableDriver(currentDriverId);
+        if (newDriverId == -1) {
+            vehicleService.releaseVehicle(assignment.getVehicleId());
+            bookingService.cancelBooking(bookingId);
+            System.out.println("No driver available so booking cancelled");
+        }else{
+            bookingAssignmentService.updateDriver(assignment.getId(), newDriverId);
+        }
+    }
+
+    private void finishRide(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
         if(bookingAssignmentService.finishRide(bookingId)){
             req.setAttribute("rideComplete", true);
+            initDashboard(messageBoxUtil.displayMessageBox(req,"success","Ride Complete Successfully","dashboard"), resp);
+        }else{
+            req.setAttribute("rideComplete", false);
+            initDashboard(messageBoxUtil.displayMessageBox(req,"error","Ride Complete Failed","dashboard"), resp);
         }
     }
 
@@ -125,5 +125,23 @@ public class DriverController extends HttpServlet {
         vehicleService.releaseVehicle(assignment.getVehicleId());
         bookingService.cancelBooking(bookingId);
     }
+
+    private void initDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Integer userId = (Integer) session.getAttribute("userId");
+        Integer driverId = driverService.getDriverIdByUserId(userId);
+
+        if (driverId == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/login");
+            return;
+        }
+        // Fetch assigned bookings
+        List<Booking> assignedBookings = bookingService.getAssignedBookings(driverId);
+        req.setAttribute("assignedBookings", assignedBookings);
+
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/driver/dashboard.jsp");
+        dispatcher.forward(req, resp);
+    }
 }
+
 

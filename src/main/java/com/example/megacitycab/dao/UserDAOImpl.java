@@ -14,6 +14,7 @@ import static com.example.megacitycab.util.HashPassword.hashPassword;
 public class UserDAOImpl implements UserDAO {
     private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
     private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
+    private static final String SELECT_USER_BY_NIC = "SELECT * FROM users WHERE nic = ?";
     @Override
     public User getUserByUsername(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
@@ -92,9 +93,7 @@ public class UserDAOImpl implements UserDAO {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            String hashedPassword = hashPassword(user.getPassword());
-
-            statement.setString(1, hashedPassword);
+            statement.setString(1, user.getPassword());
             statement.setString(2, user.getName());
             statement.setString(3, user.getAddress());
             statement.setString(4, user.getNic());
@@ -106,8 +105,6 @@ public class UserDAOImpl implements UserDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
         return false;
     }
@@ -162,6 +159,23 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
         }
         return user;
+    }
+
+    @Override
+    public boolean getUserByNic(String nic) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_NIC)) {
+
+            statement.setString(1, nic);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private User extractUser(ResultSet resultSet) throws SQLException {

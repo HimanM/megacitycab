@@ -97,7 +97,93 @@ public class DriverDAOImpl implements DriverDAO {
         return drivers;
     }
 
-    //to be fixed
+    @Override
+    public void releaseDriver(int driverId) {
+        String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'Available' WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+
+            statement.setInt(1, driverId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean acceptBooking(int driverId, int bookingId) {
+        String ACCEPT_BOOKING_QUERY = "UPDATE bookings SET driver_id = ?, status = 'ACCEPTED' WHERE id = ? AND status = 'PENDING'";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(ACCEPT_BOOKING_QUERY)) {
+
+            statement.setInt(1, driverId);
+            statement.setInt(2, bookingId);
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0; // Return true if at least one row was updated
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+//    public int getAndAssignAvailableDriver() {
+//        String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' AND verified = 'Yes' AND ORDER BY id ASC";
+//        String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
+//
+//        try (Connection connection = DatabaseConnection.getConnection();
+//             PreparedStatement selectStmt = connection.prepareStatement(SELECT_AVAILABLE_DRIVER);
+//             PreparedStatement updateStmt = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+//
+//            ResultSet resultSet = selectStmt.executeQuery();
+//
+//            if (resultSet.next()) {
+//                int driverId = resultSet.getInt("id");
+//
+//                // Mark the driver as busy to prevent duplicate assignments
+//                updateStmt.setInt(1, driverId);
+//                updateStmt.executeUpdate();
+//
+//                return driverId;
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return -1; // No available driver found
+//    }
+    @Override
+    public int getAndAssignAvailableDriver(int excludedDriverId) {
+        String SELECT_AVAILABLE_DRIVER = "SELECT TOP 1 id FROM drivers WHERE status = 'Available' AND verified = 'Yes' AND id <> ? ORDER BY id ASC";
+        String UPDATE_DRIVER_STATUS = "UPDATE drivers SET status = 'On Trip' WHERE id = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement selectStmt = connection.prepareStatement(SELECT_AVAILABLE_DRIVER);
+             PreparedStatement updateStmt = connection.prepareStatement(UPDATE_DRIVER_STATUS)) {
+
+            // Set the excluded driver ID in the SELECT query
+            selectStmt.setInt(1, excludedDriverId);
+            ResultSet resultSet = selectStmt.executeQuery();
+
+            if (resultSet.next()) {
+                int driverId = resultSet.getInt("id");
+
+                // Mark the driver as busy
+                updateStmt.setInt(1, driverId);
+                updateStmt.executeUpdate();
+
+                return driverId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1; // No available driver found
+    }
+
+
     @Override
     public User getDriverById(int driverId) {
         final CustomerService userService = new CustomerService();

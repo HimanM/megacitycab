@@ -2,7 +2,7 @@ package com.example.megacitycab.model;
 
 import java.time.LocalDateTime;
 
-public class Driver {
+public class Driver extends User {
     private int id;
     private String name;
     private String phoneNumber;
@@ -26,11 +26,6 @@ public class Driver {
     }
 
     // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
 
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
@@ -40,9 +35,6 @@ public class Driver {
 
     public String isVerified() { return verified; }
     public void setVerified(String verified) { this.verified = verified; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public int getUserId() {
         return userId;

@@ -41,11 +41,15 @@ public class UserController extends HttpServlet {
         User loggedInUser = userService.getCustomerById(UserId);
 
         if (loggedInUser != null) {
+            request.setAttribute("loggedInUser", loggedInUser);
+            request.setAttribute("role", loggedInUser.getRole());
             String email = request.getParameter("email");
             String nic = request.getParameter("nic");
             String phoneNumber = request.getParameter("phoneNumber");
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirm-password");
+
+            System.out.println("Password: " + password);
 
             // Validate user input
             if (email == null || email.isEmpty() || phoneNumber == null || phoneNumber.isEmpty()) {
@@ -53,13 +57,21 @@ public class UserController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/other/profile.jsp").forward(request, response);
                 return;
             }
+
+            if (password != null && !password.isEmpty()) {
+                String hashedPassword = null;
+                try {
+                    hashedPassword = hashPassword(password);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
+                loggedInUser.setPassword(hashedPassword);
+            }
+
             if (!password.equals(confirmPassword)) {
                 request.setAttribute("error", "Passwords do not match.");
                 request.getRequestDispatcher("/WEB-INF/views/other/profile.jsp").forward(request, response);
                 return;
-            }
-            if (password != null && !password.isEmpty()) {
-                loggedInUser.setPassword(password);
             }
             // Update the user in the database
             loggedInUser.setEmail(email);
@@ -68,6 +80,7 @@ public class UserController extends HttpServlet {
 
 
             boolean updateSuccess = userService.updateCustomer(loggedInUser);
+            System.out.println("updateSuccess" + updateSuccess);
             if (updateSuccess) {
                 request.setAttribute("success", "Profile updated successfully.");
                 request.getRequestDispatcher("/WEB-INF/views/other/profile.jsp").forward(request, response);

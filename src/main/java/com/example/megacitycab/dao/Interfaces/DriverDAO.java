@@ -14,4 +14,7 @@ public interface DriverDAO {
     boolean verifyDriver(int driverId);
     Integer getDriverIdByUserId(Integer userId);
     List<Driver> getUnverifiedDrivers();
+    void releaseDriver(int driverId);
+    boolean acceptBooking(int driverId, int bookingId);
+    int getAndAssignAvailableDriver(int driverId);
 }
