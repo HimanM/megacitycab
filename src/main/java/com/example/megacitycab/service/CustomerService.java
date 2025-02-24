@@ -41,12 +41,10 @@ public class CustomerService {
             if (updatedCustomer == null) {
                 throw new UserException("Updated customer data cannot be null");
             }
-
-            UserDAO.updateUser(updatedCustomer);
+            return (UserDAO.updateUser(updatedCustomer));
         } catch (Exception e) {
             throw new UserException("Error while updating customer details", e);
         }
-        return false;
     }
 
     // Fetch a customer by ID
@@ -97,4 +95,7 @@ public class CustomerService {
         return UserDAO.getUserByEmail(email) != null;
     }
 
+    public boolean isNicAlreadyRegistered(String nic) {
+        return UserDAO.getUserByNic(nic);
+    }
 }

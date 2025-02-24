@@ -20,32 +20,11 @@ public class BookingAssignmentService {
     }
 
     public Assignment getAssignmentByBookingId(int bookingId) {
-        String sql = "SELECT * FROM booking_assignments WHERE booking_id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, bookingId);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Assignment assignment = new Assignment();
-                assignment.setId(rs.getInt("id"));
-                assignment.setDriverId(rs.getInt("driver_id"));
-                assignment.setVehicleId(rs.getInt("vehicle_id"));
-                assignment.setBookingId(rs.getInt("booking_id"));
-                assignment.setAssignedAt(rs.getTimestamp("assigned_at").toLocalDateTime());
-                return assignment;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return bookingAssignmentDAO.getAssignmentByBookingId(bookingId);
     }
 
     public boolean finishRide(Integer bookingId) {
-//        System.out.println("Finish Ride Triggered");
+        if (bookingId == null) return false;
         Assignment assignment = getAssignmentByBookingId(bookingId);
         driverService.releaseDriver(assignment.getDriverId());
         vehicleService.releaseVehicle(assignment.getVehicleId());
@@ -53,4 +32,7 @@ public class BookingAssignmentService {
         return true;
     }
 
+    public boolean updateDriver(int id, int newDriverId) {
+        return bookingAssignmentDAO .updateDriver(id, newDriverId);
+    }
 }

@@ -158,7 +158,7 @@ public class BookingController extends HttpServlet {
                 }
 
                 // Assign an available driver
-                Integer driverId = driverService.getAndAssignAvailableDriver();
+                Integer driverId = driverService.getAndAssignAvailableDriver(-1);
                 if (driverId == -1) {
                     req.setAttribute("noDrivers", true);
                     initPlaceBooking(req, resp);

@@ -13,11 +13,9 @@ public class AdminService {
     public AdminService() {
         this.adminDAO = new AdminDAOImpl(); // Using AdminDAOImpl by default
     }
-
     public AdminService(AdminDAO adminDAO) {
         this.adminDAO = adminDAO; // Allow dependency injection if needed
     }
-
     // Add a new admin
     public void createAdmin(Admin admin) throws AdminException {
         try {
@@ -32,7 +30,6 @@ public class AdminService {
             throw new AdminException("Error while creating admin", e);
         }
     }
-
     // Update an existing admin
     public void updateAdmin(Admin admin) throws AdminException {
         try {
@@ -44,7 +41,6 @@ public class AdminService {
             throw new AdminException("Error while updating admin", e);
         }
     }
-
     // Delete an admin by ID
     public boolean deleteAdmin(int ID) throws AdminException {
         try {
@@ -53,7 +49,6 @@ public class AdminService {
             throw new AdminException("Error while deleting admin", e);
         }
     }
-
     // Get admin by username
     public Admin getAdminByUsername(String username) throws AdminException {
         try {
@@ -62,7 +57,6 @@ public class AdminService {
             throw new AdminException("Error while fetching admin details", e);
         }
     }
-
     // Get all admins
     public List<Admin> getAllAdmins() throws AdminException {
         try {

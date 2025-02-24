@@ -17,14 +17,6 @@ import static com.example.megacitycab.util.HashPassword.hashPassword;
 public class AuthService {
     private static final UserDAO userDAO = new UserDAOImpl();
 
-    /**
-     * Authenticates a user by username and password.
-     *
-     * @param username The username of the user.
-     * @param password The password of the user.
-     * @return The authenticated User object.
-     * @throws UserException If authentication fails.
-     */
     public static User authenticate(String username, String password) {
         try {
             User user = userDAO.getUserByUsername(username);
@@ -40,13 +32,6 @@ public class AuthService {
         }
     }
 
-    /**
-     * Verifies a raw password against the hashed password stored in the database.
-     *
-     * @param rawPassword The raw password input.
-     * @param hashedPassword The hashed password stored in the database.
-     * @return True if the passwords match, false otherwise.
-     */
     public static boolean verifyPassword(String username, String inputPassword) throws SQLException, NoSuchAlgorithmException {
         String query = "SELECT password FROM users WHERE username = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -59,8 +44,6 @@ public class AuthService {
 
                 // Hash the input password using the same method as when storing passwords
                 String newHash = hashPassword(inputPassword);
-//                System.out.println("Stored Hash: " + storedHash);
-//                System.out.println("New Hash: " + newHash);
                 return newHash.equals(storedHash);
             }
         }

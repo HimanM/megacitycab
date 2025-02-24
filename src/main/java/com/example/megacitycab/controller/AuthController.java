@@ -109,6 +109,7 @@ public class AuthController extends HttpServlet {
     private void handleRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException, NoSuchAlgorithmException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String confirmPassword = req.getParameter("confirm-password");
         String name = req.getParameter("name");
         String address = req.getParameter("address");
         String nic = req.getParameter("nic");
@@ -122,6 +123,9 @@ public class AuthController extends HttpServlet {
         if (!ValidationUtil.isValidUsername(username)) {
             errors.add("Username must be alphanumeric and meet the required standards.");
         }
+        if (!password.equals(confirmPassword)) {
+            errors.add("Passwords do not match.");
+        }
         if (!ValidationUtil.isValidPassword(password)) {
             errors.add("Password must meet the required standards (e.g., minimum 8 characters, include a special character, etc.).");
         }
@@ -129,9 +133,11 @@ public class AuthController extends HttpServlet {
             errors.add("Please provide a valid email address.");
         } else if (customerService.isEmailAlreadyRegistered(email)) {
             errors.add("The provided email address is already registered.");
+        } else if (customerService.isNicAlreadyRegistered(nic)) {
+            errors.add("The provided NIC is already registered.");
         }
 
-        if (name == null || name.trim().isEmpty()) errors.add("Name cannot be empty.");
+            if (name == null || name.trim().isEmpty()) errors.add("Name cannot be empty.");
         if (address == null || address.trim().isEmpty()) errors.add("Address cannot be empty.");
         if (nic == null || nic.trim().isEmpty()) errors.add("NIC cannot be empty.");
         if (phone == null || phone.trim().isEmpty()) errors.add("Phone number cannot be empty.");
@@ -166,10 +172,12 @@ public class AuthController extends HttpServlet {
                     driver.setCreatedAt(java.time.LocalDateTime.now());
 
                     boolean driverRegistered = driverDAO.addDriver(driver);
+                    System.out.println("Driver registered: " + driverRegistered);
                     if (driverRegistered) {
                         resp.sendRedirect(req.getContextPath() + "/auth/login");  // Redirect to login
                     } else {
-                        req.setAttribute("error", "Driver registration failed. Please try again.");
+                        errors.add("Driver registration failed. Please try again.");
+                        req.setAttribute("error",errors);
                         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp");
                         dispatcher.forward(req, resp);
                     }
@@ -177,7 +185,8 @@ public class AuthController extends HttpServlet {
                     resp.sendRedirect(req.getContextPath() + "/auth/login");
                 }
             } else {
-                req.setAttribute("error", "Registration failed. Please try again.");
+                errors.add("Registration failed. Please try again.");
+                req.setAttribute("error", errors);
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/auth/register.jsp");
                 dispatcher.forward(req, resp);
             }
