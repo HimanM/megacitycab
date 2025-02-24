@@ -91,11 +91,21 @@ public class CustomerService {
         }
     }
 
-    public boolean isEmailAlreadyRegistered(String email) {
-        return UserDAO.getUserByEmail(email) != null;
+    public boolean isEmailAlreadyRegistered(String email) throws CustomerException {
+        try {
+            return UserDAO.getUserByEmail(email) != null;
+        }
+        catch (Exception e) {
+            throw new CustomerException("Error while checking email registration", e);
+        }
     }
 
-    public boolean isNicAlreadyRegistered(String nic) {
-        return UserDAO.getUserByNic(nic);
+    public boolean isNicAlreadyRegistered(String nic) throws CustomerException {
+        try {
+            return UserDAO.getUserByNic(nic);
+        }
+        catch (Exception e) {
+            throw new CustomerException("Error while checking NIC registration", e);
+        }
     }
 }

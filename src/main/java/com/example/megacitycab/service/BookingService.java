@@ -99,83 +99,182 @@ public class BookingService {
             throw new BookingException("Error while canceling booking", e);
         }
     }
-    public boolean hasActiveBooking(int customerId){
-        return bookingDAO.hasActiveBooking(customerId);
+    public boolean hasActiveBooking(int customerId) throws BookingException {
+        try {
+            return bookingDAO.hasActiveBooking(customerId);
+        } catch (Exception e) {
+            throw new BookingException("Error while checking for active bookings", e);
+        }
     }
 
-    public void cancelBooking(int bookingId) {
+    public void cancelBooking(int bookingId) throws BookingException  {
+        try {
             bookingDAO.updateBookingStatus(bookingId, "Cancelled");
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while canceling booking", e);
+        }
     }
 
-    public List<Booking> getBookingsByCustomer(int customerId) {
-        return bookingDAO.getBookingsByCustomerId(customerId);
+    public List<Booking> getBookingsByCustomer(int customerId) throws BookingException {
+        try {
+            return bookingDAO.getBookingsByCustomerId(customerId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching bookings for customer", e);
+        }
     }
 
-    public List<Booking> getActiveBookings(int customerId) {
-        return bookingDAO.getBookingsByStatus(customerId, "PENDING", "Approved");
+    public List<Booking> getActiveBookings(int customerId) throws BookingException {
+        try {
+            return bookingDAO.getBookingsByStatus(customerId, "PENDING", "Approved");
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching active bookings", e);
+        }
     }
 
-    public List<Booking> getPreviousBookings(int customerId) {
-        return bookingDAO.getBookingsByStatus(customerId, "Completed");
+    public List<Booking> getPreviousBookings(int customerId) throws BookingException {
+        try {
+            return bookingDAO.getBookingsByStatus(customerId, "Completed");
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching previous bookings", e);
+        }
     }
 
-    public List<Booking> getCancelledBookings(int customerId) {
-        return bookingDAO.getBookingsByStatus(customerId, "Cancelled");
+    public List<Booking> getCancelledBookings(int customerId) throws BookingException {
+        try {
+            return bookingDAO.getBookingsByStatus(customerId, "Cancelled");
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching cancelled bookings", e);
+        }
     }
 
-    public void acceptBooking(int bookingId, int driverId) {
-        bookingDAO.acceptBooking(bookingId, driverId);
+    public void acceptBooking(int bookingId, int driverId) throws BookingException {
+        try {
+            bookingDAO.acceptBooking(bookingId, driverId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while accepting booking", e);
+        }
     }
 
-    public BookingDetails getAllDetails(Integer bookingId) {
-        return bookingDAO.getAllDetails(bookingId);
+    public BookingDetails getAllDetails(Integer bookingId) throws BookingException  {
+        try {
+            return bookingDAO.getAllDetails(bookingId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching booking details", e);
+        }
     }
 
-    public void completeBooking(int bookingId) {
-        bookingDAO.completeBooking(bookingId);
+    public void completeBooking(int bookingId) throws BookingException  {
+        try {
+            bookingDAO.completeBooking(bookingId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while completing booking", e);
+        }
     }
 
-    public Vehicle getVehicleById(int vehicleId) {
-        return vehicleDAO.getVehicleById(vehicleId);
+    public Vehicle getVehicleById(int vehicleId) throws BookingException  {
+        try {
+            return vehicleDAO.getVehicleById(vehicleId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching vehicle details", e);
+        }
     }
 
-    public List<Vehicle> getAvailableVehicles() {
-        return vehicleDAO.getAvailableVehicles();
+    public List<Vehicle> getAvailableVehicles() throws BookingException  {
+        try {
+            return vehicleDAO.getAvailableVehicles();
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching available vehicles", e);
+        }
     }
 
-    public Integer getAndAssignAvailableDriver(int driverId) {
-        return driverDAO.getAndAssignAvailableDriver(driverId);
+    public Integer getAndAssignAvailableDriver(int driverId) throws BookingException {
+        try {
+            return driverDAO.getAndAssignAvailableDriver(driverId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching available drivers", e);
+        }
     }
 
-    public boolean createAssignment(Assignment bookingAssignment) {
-        return bookingAssignmentDAO.insertBookingAssignment(bookingAssignment);
+    public boolean createAssignment(Assignment bookingAssignment)throws BookingException  {
+        try {
+            return bookingAssignmentDAO.insertBookingAssignment(bookingAssignment);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while creating assignment", e);
+        }
     }
 
-    public void assignVehicle(int selectedVehicleId) {
-        vehicleDAO.assignVehicle(selectedVehicleId);
+    public void assignVehicle(int selectedVehicleId) throws BookingException {
+        try {
+            vehicleDAO.assignVehicle(selectedVehicleId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while assigning vehicle", e);
+        }
     }
 
-    public User getCustomerById(Integer customerId) {
-        return userDAO.getUserById(customerId);
+    public User getCustomerById(Integer customerId) throws BookingException {
+        try {
+            return userDAO.getUserById(customerId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching customer details", e);
+        }
     }
 
-    public boolean processPayment(Payment payment) {
-        return paymentDAO.processPayment(payment);
+    public boolean processPayment(Payment payment) throws BookingException {
+        try {
+            return paymentDAO.processPayment(payment);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while processing payment", e);
+        }
     }
 
-    public Assignment getAssignmentByBookingId(int bookingId) {
-        return bookingAssignmentDAO.getAssignmentByBookingId(bookingId);
+    public Assignment getAssignmentByBookingId(int bookingId) throws BookingException {
+        try {
+            return bookingAssignmentDAO.getAssignmentByBookingId(bookingId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching assignment details", e);
+        }
     }
 
-    public User getDriverById(int driverId) {
-        return driverDAO.getDriverById(driverId);
+    public User getDriverById(int driverId) throws BookingException {
+        try {
+            return driverDAO.getDriverById(driverId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while fetching driver details", e);
+        }
     }
 
-    public void releaseVehicle(int vehicleId) {
-        vehicleDAO.releaseVehicle(vehicleId);
+    public void releaseVehicle(int vehicleId) throws BookingException {
+        try {
+            vehicleDAO.releaseVehicle(vehicleId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while releasing vehicle", e);
+        }
     }
 
-    public void releaseDriver(int driverId) {
-        driverDAO.releaseDriver(driverId);
+    public void releaseDriver(int driverId) throws BookingException {
+        try {
+            driverDAO.releaseDriver(driverId);
+        }
+        catch (Exception e) {
+            throw new BookingException("Error while releasing driver", e);
+        }
     }
 }
