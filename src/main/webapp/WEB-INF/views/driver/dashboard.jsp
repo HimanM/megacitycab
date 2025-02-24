@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="../shared/driver_navbar.jsp" %>
+<%@ include file="../shared/message_popup.jsp" %>
 <%
     Boolean finishRide = (Boolean) request.getAttribute("rideComplete");
 %>
@@ -54,6 +55,7 @@
                     <th>Order ID</th>
                     <th>Customer</th>
                     <th>Destination</th>
+                    <th>Pickup Location</th>
                     <th>Booking Date</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -66,6 +68,7 @@
                             <td>${booking.id}</td>
                             <td>${booking.customerName}</td>
                             <td>${booking.destinationDetails}</td>
+                            <td>${booking.pickupLocation}</td>
                             <td>${booking.bookingDate}</td>
                             <td>${booking.status}</td>
                             <td>
