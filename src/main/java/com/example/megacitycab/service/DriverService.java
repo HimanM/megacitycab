@@ -1,7 +1,7 @@
 package com.example.megacitycab.service;
 
 
-import com.example.megacitycab.config.DatabaseConnection;
+
 import com.example.megacitycab.dao.*;
 import com.example.megacitycab.dao.Interfaces.*;
 import com.example.megacitycab.exceptions.DriverException;
@@ -11,15 +11,12 @@ import com.example.megacitycab.model.DTO.BookingDetails;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.util.List;
 
 public class DriverService {
 
-    private final BookingDAO bookingDAO = new BookingDAOImpl();;
+    private final BookingDAO bookingDAO = new BookingDAOImpl();
     private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
     private static final DriverDAO driverDAO = new DriverDAOImpl();
     private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
