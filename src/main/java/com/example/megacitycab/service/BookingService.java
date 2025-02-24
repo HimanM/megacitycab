@@ -1,9 +1,9 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.Interfaces.BookingDAO;
-import com.example.megacitycab.dao.BookingDAOImpl;
+import com.example.megacitycab.dao.*;
+import com.example.megacitycab.dao.Interfaces.*;
 import com.example.megacitycab.exceptions.BookingException;
-import com.example.megacitycab.model.Booking;
+import com.example.megacitycab.model.*;
 import com.example.megacitycab.model.DTO.BookingDetails;
 import com.example.megacitycab.model.DTO.RidePayment;
 
@@ -11,15 +11,14 @@ import java.util.List;
 import java.util.Random;
 
 public class BookingService {
-    private final BookingDAO bookingDAO;
 
-    public BookingService() {
-        this.bookingDAO = new BookingDAOImpl(); // Default implementation
-    }
+    private final BookingDAO bookingDAO = new BookingDAOImpl();;
+    private static final UserDAO userDAO = new UserDAOImpl();
+    private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
+    private static final DriverDAO driverDAO = new DriverDAOImpl();
+    private static final PaymentDAO paymentDAO = new PaymentDAOImpl();
+    private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
 
-    public BookingService(BookingDAO bookingDAO) {
-        this.bookingDAO = bookingDAO; // Allow dependency injection for testing or customization
-    }
 
     // Create a booking
     public boolean createBooking(Booking booking) throws BookingException {
@@ -124,12 +123,8 @@ public class BookingService {
         return bookingDAO.getBookingsByStatus(customerId, "Cancelled");
     }
 
-    public List<Booking> getAssignedBookings(Integer driverId) {
-        return bookingDAO.getBookingsByDriverId(driverId);
-    }
-
-    public boolean acceptBooking(int bookingId, int driverId) {
-        return bookingDAO.acceptBooking(bookingId, driverId);
+    public void acceptBooking(int bookingId, int driverId) {
+        bookingDAO.acceptBooking(bookingId, driverId);
     }
 
     public BookingDetails getAllDetails(Integer bookingId) {
@@ -138,5 +133,49 @@ public class BookingService {
 
     public void completeBooking(int bookingId) {
         bookingDAO.completeBooking(bookingId);
+    }
+
+    public Vehicle getVehicleById(int vehicleId) {
+        return vehicleDAO.getVehicleById(vehicleId);
+    }
+
+    public List<Vehicle> getAvailableVehicles() {
+        return vehicleDAO.getAvailableVehicles();
+    }
+
+    public Integer getAndAssignAvailableDriver(int driverId) {
+        return driverDAO.getAndAssignAvailableDriver(driverId);
+    }
+
+    public boolean createAssignment(Assignment bookingAssignment) {
+        return bookingAssignmentDAO.insertBookingAssignment(bookingAssignment);
+    }
+
+    public void assignVehicle(int selectedVehicleId) {
+        vehicleDAO.assignVehicle(selectedVehicleId);
+    }
+
+    public User getCustomerById(Integer customerId) {
+        return userDAO.getUserById(customerId);
+    }
+
+    public boolean processPayment(Payment payment) {
+        return paymentDAO.processPayment(payment);
+    }
+
+    public Assignment getAssignmentByBookingId(int bookingId) {
+        return bookingAssignmentDAO.getAssignmentByBookingId(bookingId);
+    }
+
+    public User getDriverById(int driverId) {
+        return driverDAO.getDriverById(driverId);
+    }
+
+    public void releaseVehicle(int vehicleId) {
+        vehicleDAO.releaseVehicle(vehicleId);
+    }
+
+    public void releaseDriver(int driverId) {
+        driverDAO.releaseDriver(driverId);
     }
 }

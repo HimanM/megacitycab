@@ -19,7 +19,7 @@
     <h2 class="text-center">Dashboard</h2>
     <div class="row mt-5">
         <div class="col-6 col-md-4">
-            <a href="${pageContext.request.contextPath}/user/dashboard" class="card text-center text-decoration-none">
+            <a href="${pageContext.request.contextPath}/customer/dashboard" class="card text-center text-decoration-none">
                 <div class="card-body">
                     <h5 class="card-title">Dashboard</h5>
                     <p class="card-text">View your dashboard</p>

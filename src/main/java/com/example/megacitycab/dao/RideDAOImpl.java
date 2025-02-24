@@ -1,6 +1,7 @@
-package com.example.megacitycab.service;
+package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.RideDAO;
 import com.example.megacitycab.model.DTO.Ride;
 
 import java.sql.Connection;
@@ -8,7 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RideService {
+public class RideDAOImpl implements RideDAO {
+    @Override
     public Ride getRideByDriverId(int driverId) {
         Ride ride = null;
         String sql = """
@@ -48,5 +50,4 @@ public class RideService {
         }
         return ride;
     }
-
 }

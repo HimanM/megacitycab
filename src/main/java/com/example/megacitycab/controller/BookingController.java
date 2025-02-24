@@ -18,11 +18,6 @@ import java.util.List;
 @WebServlet("/customer/*")
 public class BookingController extends HttpServlet {
     private final BookingService bookingService = new BookingService();
-    private final VehicleService vehicleService = new VehicleService();
-    private final DriverService driverService = new DriverService();
-    private final PaymentService paymentService = new PaymentService();
-    private final CustomerService customerService = new CustomerService();
-    private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
 
 
     @Override
@@ -77,7 +72,6 @@ public class BookingController extends HttpServlet {
         }
     }
 
-
     private void createBooking(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String destinationDetails = req.getParameter("destination");
@@ -111,7 +105,7 @@ public class BookingController extends HttpServlet {
 
             if (req.getParameter("calculateFare") != null) {
                 RidePayment ridePayment = bookingService.calculateFare(destinationDetails, pickupLocationDetails);
-                Vehicle selectedVehicle = vehicleService.getVehicleById(Integer.parseInt(selectedVehicleIdStr));
+                Vehicle selectedVehicle = bookingService.getVehicleById(Integer.parseInt(selectedVehicleIdStr));
 
                 req.setAttribute("fare", ridePayment.getTotalAfterTax());
                 req.getSession().setAttribute("calculatedFare", ridePayment.getTotalAfterTax());
@@ -123,7 +117,7 @@ public class BookingController extends HttpServlet {
                 req.setAttribute("pickupLocation", pickupLocationDetails);
                 req.setAttribute("bookingDate", bookingDateStr);
 
-                List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
+                List<Vehicle> availableVehicles = bookingService.getAvailableVehicles();
                 req.setAttribute("availableVehicles", availableVehicles);
                 req.setAttribute("selectedVehicleId", selectedVehicleIdStr);
             }
@@ -157,7 +151,7 @@ public class BookingController extends HttpServlet {
                 }
 
                 // Assign an available driver
-                Integer driverId = driverService.getAndAssignAvailableDriver(-1);
+                Integer driverId = bookingService.getAndAssignAvailableDriver(-1);
                 if (driverId == -1) {
                     req.setAttribute("noDrivers", true);
                     initPlaceBooking(req, resp);
@@ -183,24 +177,24 @@ public class BookingController extends HttpServlet {
                     bookingAssignment.setVehicleId(selectedVehicleId);
                     bookingAssignment.setAssignedAt(LocalDateTime.now());
 
-                    boolean assignmentSuccess = bookingAssignmentService.createAssignment(bookingAssignment);
+                    boolean assignmentSuccess = bookingService.createAssignment(bookingAssignment);
                     if (!assignmentSuccess) {
                         req.setAttribute("error", "Booking placed, but driver assignment failed.");
                     }
-                    vehicleService.assignVehicle(selectedVehicleId);
+                    bookingService.assignVehicle(selectedVehicleId);
 
                     // Insert into Payment Table
                     Payment payment = new Payment();
                     payment.setBookingId(booking.getId());
                     payment.setCustomerId(customerId);
                     payment.setAmount(totalAmount);
-                    payment.setCardHolderName(customerService.getCustomerById(customerId).getName());
+                    payment.setCardHolderName(bookingService.getCustomerById(customerId).getName());
                     payment.setCardNumber(cardNumber);
                     payment.setExpiryDate(expiryDate);
                     payment.setCvv(cvv);
                     payment.setStatus("Completed");
 
-                    boolean paymentSuccess = paymentService.processPayment(payment);
+                    boolean paymentSuccess = bookingService.processPayment(payment);
                     if (!paymentSuccess) {
                         req.setAttribute("error", "Payment failed. Please try again.");
                     }
@@ -221,8 +215,6 @@ public class BookingController extends HttpServlet {
             dispatcher.forward(req, resp);
         }
     }
-
-
 
     private void deleteBooking(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
@@ -256,10 +248,11 @@ public class BookingController extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/viewBookings.jsp");
         dispatcher.forward(req, resp);
     }
+
     private void viewBookingDetails(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
         Booking booking = bookingService.getBookingById(bookingId);
-        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        Assignment assignment = bookingService.getAssignmentByBookingId(bookingId);
 
         int userId = (int) req.getSession().getAttribute("userId");
         if (booking == null || !(booking.getCustomerId() == userId)) {
@@ -271,8 +264,8 @@ public class BookingController extends HttpServlet {
             int driverId = assignment.getDriverId();
             int vehicleId = assignment.getVehicleId();
 
-            User driver = driverService.getDriverById(driverId);
-            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+            User driver = bookingService.getDriverById(driverId);
+            Vehicle vehicle = bookingService.getVehicleById(vehicleId);
             req.setAttribute("driverName", driver.getName());
             req.setAttribute("driverPhone", driver.getPhone());
             req.setAttribute("vehicle", vehicle.getManufacturer() + " " + vehicle.getModel() + " Plate No:" +vehicle.getLicensePlate());
@@ -281,15 +274,16 @@ public class BookingController extends HttpServlet {
 
         req.getRequestDispatcher("/WEB-INF/views/customer/bookingDetails.jsp").forward(req, resp);
     }
+
     private void cancelBooking(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        Assignment assignment = bookingService.getAssignmentByBookingId(bookingId);
 
         if (assignment != null) {
             int driverId = assignment.getDriverId();
             int vehicleId = assignment.getVehicleId();
-            vehicleService.releaseVehicle(vehicleId);
-            driverService.releaseDriver(driverId);
+            bookingService.releaseVehicle(vehicleId);
+            bookingService.releaseDriver(driverId);
         }
         bookingService.cancelBooking(bookingId);
         resp.sendRedirect(req.getContextPath() + "/customer/booking/viewBookings");
@@ -310,7 +304,7 @@ public class BookingController extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
 
         // Fetch available vehicles for selection
-        List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
+        List<Vehicle> availableVehicles = bookingService.getAvailableVehicles();
         req.setAttribute("availableVehicles", availableVehicles);
         dispatcher.forward(req, resp);
     }

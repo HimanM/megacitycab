@@ -218,7 +218,7 @@ public class BookingDAOImpl implements BookingDAO {
     public List<Booking> getBookingsByDriverId(Integer driverId) {
         List<Booking> bookings = new ArrayList<>();
 
-        String QUERY = "SELECT b.id, u.name AS customer_name, b.destination_details, b.booking_date, b.status " +
+        String QUERY = "SELECT b.id, u.name AS customer_name, b.destination_details, b.pickupLocation, b.booking_date, b.status " +
                 "FROM bookings b " +
                 "JOIN users u ON b.customer_id = u.id " +
                 "JOIN booking_assignments ba ON b.id = ba.booking_id " +
@@ -235,6 +235,7 @@ public class BookingDAOImpl implements BookingDAO {
                 booking.setId(resultSet.getInt("id"));
                 booking.setCustomerName(resultSet.getString("customer_name"));
                 booking.setDestinationDetails(resultSet.getString("destination_details"));
+                booking.setPickupLocation(resultSet.getString("pickupLocation"));
                 booking.setBookingDate(resultSet.getTimestamp("booking_date").toLocalDateTime());
                 booking.setStatus(resultSet.getString("status"));
                 bookings.add(booking);

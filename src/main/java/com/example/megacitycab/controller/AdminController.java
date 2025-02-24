@@ -20,11 +20,8 @@ import java.util.List;
 @WebServlet("/admin/dashboard/*")
 public class AdminController extends HttpServlet {
     private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
-    private final PaymentService paymentService = new PaymentService();
-    private final DriverService driverService = new DriverService();
-    private final CustomerService userService = new CustomerService();
-    private final VehicleService vehicleService = new VehicleService();
-    private final RideService rideService = new RideService();
+    private final AdminService adminService = new AdminService();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -90,7 +87,7 @@ public class AdminController extends HttpServlet {
     private void updateVehicle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer vehicleId = Integer.parseInt(req.getParameter("vehicleId"));
         String newStatus = req.getParameter("status");
-        if(vehicleService.updateVehicleStatus(vehicleId, newStatus)){
+        if(adminService.updateVehicleStatus(vehicleId, newStatus)){
             manageVehicles(messageBoxUtil.displayMessageBox(req,"success","Vehicle Status Changed Successfully.","manageVehicles"), resp);
         }else {
             manageVehicles(messageBoxUtil.displayMessageBox(req,"error","Vehicle Status Change Failed.","manageVehicles"), resp);
@@ -114,36 +111,34 @@ public class AdminController extends HttpServlet {
         vehicle.setCapacity(Integer.parseInt(capacity));
         vehicle.setCreatedAt(java.time.LocalDateTime.now());
 
-        vehicleService.addVehicle(vehicle);
+        adminService.addVehicle(vehicle);
         manageVehicles(messageBoxUtil.displayMessageBox(req,"success","Vehicle added successfully","manageVehicles"),resp);
     }
 
     private void deleteUsers(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int userId = Integer.parseInt(req.getParameter("userId"));
-        userService.deleteCustomer(userId);
+        adminService.deleteCustomer(userId);
         resp.sendRedirect(req.getContextPath() + "/admin/dashboard/manageUsers");
     }
 
     private void viewPayments(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Payment> payments = paymentService.getAllPayments();
+        List<Payment> payments = adminService.getAllPayments();
         request.setAttribute("payments", payments);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/viewPayments.jsp");
         dispatcher.forward(request, response);
     }
 
-
     private void manageUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = userService.getAllCustomers();
+        List<User> users = adminService.getAllCustomers();
         request.setAttribute("users", users);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/manageUsers.jsp");
         dispatcher.forward(request, response);
     }
-
-
+    
     private void manageVehicles(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Vehicle> assignedVehicles = vehicleService.getAssignedVehicles();
-        List<Vehicle> availableVehicles = vehicleService.getAvailableVehicles();
-        List<Vehicle> maintenanceVehicles = vehicleService.getMaintenanceVehicles();
+        List<Vehicle> assignedVehicles = adminService.getAssignedVehicles();
+        List<Vehicle> availableVehicles = adminService.getAvailableVehicles();
+        List<Vehicle> maintenanceVehicles = adminService.getMaintenanceVehicles();
         request.setAttribute("assignedVehicles", assignedVehicles);
         request.setAttribute("availableVehicles", availableVehicles);
         request.setAttribute("maintenanceVehicles", maintenanceVehicles);
@@ -152,7 +147,7 @@ public class AdminController extends HttpServlet {
     }
 
     private void viewDrivers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Driver> drivers = driverService.getAllDrivers();
+        List<Driver> drivers = adminService.getAllDrivers();
         request.setAttribute("driversList", drivers);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/manageDrivers.jsp");
         dispatcher.forward(request, response);
@@ -160,21 +155,20 @@ public class AdminController extends HttpServlet {
 
     private void verifyDriver(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int driverId = Integer.parseInt(request.getParameter("verifyDriverId"));
-        driverService.verifyDriver(driverId);
+        adminService.verifyDriver(driverId);
         response.sendRedirect(request.getContextPath() + "/admin/dashboard/manageDrivers");
 
     }
 
     private void removeDriver(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int driverId = Integer.parseInt(request.getParameter("id"));
-        driverService.removeDriver(driverId);
+        adminService.removeDriver(driverId);
         response.sendRedirect(request.getContextPath() + "/admin/dashboard/manageDrivers");
     }
 
-
     private void viewTrip(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int driverId = Integer.parseInt(request.getParameter("driverId"));
-        Ride trip = rideService.getRideByDriverId(driverId);
+        Ride trip = adminService.getRideByDriverId(driverId);
         if (trip != null) {
             request.setAttribute("trip", trip);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/admin/tripDetails.jsp");

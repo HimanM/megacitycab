@@ -3,10 +3,8 @@ package com.example.megacitycab.controller;
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.DTO.BookingDetails;
-import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
-import com.example.megacitycab.service.VehicleService;
 import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -24,8 +22,6 @@ public class DriverController extends HttpServlet {
     private final DriverService driverService = new DriverService();
     private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
     private final BookingService bookingService = new BookingService();
-    private final BookingAssignmentService bookingAssignmentService = new BookingAssignmentService();
-    private final VehicleService vehicleService = new VehicleService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,22 +78,22 @@ public class DriverController extends HttpServlet {
     }
 
     private void cancelAndAssignBooking(Integer bookingId) {
-        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        Assignment assignment = driverService.getAssignmentByBookingId(bookingId);
         int currentDriverId = assignment.getDriverId();
         driverService.releaseDriver(currentDriverId);
         int newDriverId = driverService.getAndAssignAvailableDriver(currentDriverId);
         if (newDriverId == -1) {
-            vehicleService.releaseVehicle(assignment.getVehicleId());
-            bookingService.cancelBooking(bookingId);
+            driverService.releaseVehicle(assignment.getVehicleId());
+            driverService.cancelBooking(bookingId);
             System.out.println("No driver available so booking cancelled");
         }else{
-            bookingAssignmentService.updateDriver(assignment.getId(), newDriverId);
+            driverService.updateDriver(assignment.getId(), newDriverId);
         }
     }
 
     private void finishRide(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-        if(bookingAssignmentService.finishRide(bookingId)){
+        if(driverService.finishRide(bookingId)){
             req.setAttribute("rideComplete", true);
             initDashboard(messageBoxUtil.displayMessageBox(req,"success","Ride Complete Successfully","dashboard"), resp);
         }else{
@@ -108,7 +104,7 @@ public class DriverController extends HttpServlet {
 
     private void initDetailsPage(Integer bookingId, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
-        BookingDetails rideDetails = bookingService.getAllDetails(bookingId);
+        BookingDetails rideDetails = driverService.getAllBookingDetails(bookingId);
 
         if (rideDetails != null) {
             req.setAttribute("rideDetails", rideDetails);
@@ -120,10 +116,10 @@ public class DriverController extends HttpServlet {
     }
 
     private void cancelBooking (Integer bookingId) {
-        Assignment assignment = bookingAssignmentService.getAssignmentByBookingId(bookingId);
+        Assignment assignment = driverService.getAssignmentByBookingId(bookingId);
         driverService.releaseDriver(assignment.getDriverId());
-        vehicleService.releaseVehicle(assignment.getVehicleId());
-        bookingService.cancelBooking(bookingId);
+        driverService.releaseVehicle(assignment.getVehicleId());
+        driverService.cancelBooking(bookingId);
     }
 
     private void initDashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -136,7 +132,7 @@ public class DriverController extends HttpServlet {
             return;
         }
         // Fetch assigned bookings
-        List<Booking> assignedBookings = bookingService.getAssignedBookings(driverId);
+        List<Booking> assignedBookings = driverService.getAssignedBookings(driverId);
         req.setAttribute("assignedBookings", assignedBookings);
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/driver/dashboard.jsp");
