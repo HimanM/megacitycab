@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class BookingService {
 
-    private final BookingDAO bookingDAO = new BookingDAOImpl();;
+    private static final BookingDAO bookingDAO = new BookingDAOImpl();;
     private static final UserDAO userDAO = new UserDAOImpl();
     private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
     private static final DriverDAO driverDAO = new DriverDAOImpl();
