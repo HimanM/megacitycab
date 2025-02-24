@@ -2,7 +2,7 @@ package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.combined.BookingDetails;
+import com.example.megacitycab.model.DTO.BookingDetails;
 import com.example.megacitycab.service.BookingAssignmentService;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;

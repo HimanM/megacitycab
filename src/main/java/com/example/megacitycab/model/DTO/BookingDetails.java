@@ -1,4 +1,4 @@
-package com.example.megacitycab.model.combined;
+package com.example.megacitycab.model.DTO;
 
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.Vehicle;

@@ -1,14 +1,12 @@
 package com.example.megacitycab.service;
 
 import com.example.megacitycab.config.DatabaseConnection;
-import com.example.megacitycab.model.combined.Ride;
+import com.example.megacitycab.model.DTO.Ride;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RideService {
     public Ride getRideByDriverId(int driverId) {

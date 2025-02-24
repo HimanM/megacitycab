@@ -1,9 +1,8 @@
 package com.example.megacitycab.controller;
 
 import com.example.megacitycab.model.*;
-import com.example.megacitycab.model.combined.RidePayment;
+import com.example.megacitycab.model.DTO.RidePayment;
 import com.example.megacitycab.service.*;
-import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -4,8 +4,8 @@ import com.example.megacitycab.dao.Interfaces.BookingDAO;
 import com.example.megacitycab.dao.BookingDAOImpl;
 import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.combined.BookingDetails;
-import com.example.megacitycab.model.combined.RidePayment;
+import com.example.megacitycab.model.DTO.BookingDetails;
+import com.example.megacitycab.model.DTO.RidePayment;
 
 import java.util.List;
 import java.util.Random;

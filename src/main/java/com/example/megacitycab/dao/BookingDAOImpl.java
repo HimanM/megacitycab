@@ -3,7 +3,7 @@ package com.example.megacitycab.dao;
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.Interfaces.BookingDAO;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.combined.BookingDetails;
+import com.example.megacitycab.model.DTO.BookingDetails;
 import com.example.megacitycab.model.Vehicle;
 
 import java.util.List;

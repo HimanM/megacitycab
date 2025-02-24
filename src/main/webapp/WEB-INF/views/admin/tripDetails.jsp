@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="com.example.megacitycab.model.combined.Ride" %>
+<%@ page import="com.example.megacitycab.model.DTO.Ride" %>
 <%@ include file="../shared/admin_navbar.jsp" %>
 
 <%

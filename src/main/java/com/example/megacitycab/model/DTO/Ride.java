@@ -1,6 +1,5 @@
-package com.example.megacitycab.model.combined;
+package com.example.megacitycab.model.DTO;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
