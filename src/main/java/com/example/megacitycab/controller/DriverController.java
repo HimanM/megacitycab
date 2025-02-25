@@ -25,6 +25,12 @@ public class DriverController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Integer driverId = (Integer) req.getSession().getAttribute("userId");
+        String role = (String) req.getSession().getAttribute("role");
+        if (driverId == null || role == null || !role.equals("Driver")) {
+            resp.sendRedirect(req.getContextPath() + "/auth/login");
+            return;
+        }
         initDashboard(req, resp);
 
         String action = req.getPathInfo();

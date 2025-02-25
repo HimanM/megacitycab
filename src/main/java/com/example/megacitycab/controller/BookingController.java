@@ -24,8 +24,8 @@ public class BookingController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getPathInfo();
         Integer customerId = (Integer) req.getSession().getAttribute("userId");
-
-        if (customerId == null) {
+        String role = (String) req.getSession().getAttribute("role");
+        if (customerId == null || role == null || !role.equals("Customer")) {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }

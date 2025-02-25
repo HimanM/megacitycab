@@ -162,7 +162,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean getUserByNic(String nic) {
+    public User getUserByNic(String nic) {
+        User user = null;
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_NIC)) {
 
@@ -170,12 +171,12 @@ public class UserDAOImpl implements UserDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return true;
+                user = extractUser(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return user;
     }
 
     private User extractUser(ResultSet resultSet) throws SQLException {

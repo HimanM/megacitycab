@@ -23,7 +23,7 @@ public class BookingDAOImpl implements BookingDAO {
     private static final String UPDATE_BOOKING_STATUS ="UPDATE bookings SET status = ? WHERE id = ?";
 
     @Override
-    public void addBooking(Booking booking) {
+    public Booking addBooking(Booking booking) {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_BOOKING, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -39,12 +39,15 @@ public class BookingDAOImpl implements BookingDAO {
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                booking.setId(generatedKeys.getInt(1));  // Set the generated ID
+                booking.setId(generatedKeys.getInt(1));
+                return booking;// Set the generated ID
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -218,7 +221,7 @@ public class BookingDAOImpl implements BookingDAO {
     public List<Booking> getBookingsByDriverId(Integer driverId) {
         List<Booking> bookings = new ArrayList<>();
 
-        String QUERY = "SELECT b.id, u.name AS customer_name, b.destination_details, b.pickupLocation, b.booking_date, b.status " +
+        String QUERY = "SELECT b.id, u.name AS customer_name, b.destination_details, b.pickup_location, b.booking_date, b.status " +
                 "FROM bookings b " +
                 "JOIN users u ON b.customer_id = u.id " +
                 "JOIN booking_assignments ba ON b.id = ba.booking_id " +
@@ -235,7 +238,7 @@ public class BookingDAOImpl implements BookingDAO {
                 booking.setId(resultSet.getInt("id"));
                 booking.setCustomerName(resultSet.getString("customer_name"));
                 booking.setDestinationDetails(resultSet.getString("destination_details"));
-                booking.setPickupLocation(resultSet.getString("pickupLocation"));
+                booking.setPickupLocation(resultSet.getString("pickup_location"));
                 booking.setBookingDate(resultSet.getTimestamp("booking_date").toLocalDateTime());
                 booking.setStatus(resultSet.getString("status"));
                 bookings.add(booking);
@@ -351,7 +354,7 @@ public class BookingDAOImpl implements BookingDAO {
     }
 
     private Booking mapRowToBooking(ResultSet resultSet) throws SQLException {
-        return new Booking(
+         Booking booking = new Booking(
                 resultSet.getInt("id"),
                 resultSet.getString("order_number"),
                 resultSet.getInt("customer_id"),
@@ -359,6 +362,17 @@ public class BookingDAOImpl implements BookingDAO {
                 resultSet.getString("pickup_location"),
                 resultSet.getTimestamp("booking_date").toLocalDateTime(),
                 resultSet.getDouble("total_amount")
+
         );
+         try {
+             String status = resultSet.getString("status");
+             booking.setStatus(status);
+         }
+         catch (Exception e){
+             e.printStackTrace();
+         }
+
+         return booking;
+
     }
 }

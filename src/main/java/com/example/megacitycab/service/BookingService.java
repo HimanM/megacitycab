@@ -50,7 +50,6 @@ public class BookingService {
         return ridePayment;
     }
 
-
     // Update an existing booking
     public void updateBooking(Booking updatedBooking) throws BookingException {
         if (updatedBooking == null) {
@@ -99,6 +98,7 @@ public class BookingService {
             throw new BookingException("Error while canceling booking", e);
         }
     }
+
     public boolean hasActiveBooking(int customerId) throws BookingException {
         try {
             return bookingDAO.hasActiveBooking(customerId);

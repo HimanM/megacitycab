@@ -25,11 +25,13 @@ public class AdminController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer customerId = (Integer) request.getSession().getAttribute("userId");
-        if (customerId == null) {
+        Integer adminId = (Integer) request.getSession().getAttribute("userId");
+        String role = (String) request.getSession().getAttribute("role");
+        if (adminId == null || role == null || !role.equals("Admin")) {
             response.sendRedirect(request.getContextPath() + "/auth/login");
             return;
         }
+
         String action = request.getPathInfo();
 
 

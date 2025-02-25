@@ -5,7 +5,7 @@ import com.example.megacitycab.model.DTO.BookingDetails;
 import java.util.List;
 
 public interface BookingDAO {
-    void addBooking(Booking booking); // Create
+    Booking addBooking(Booking booking); // Create
     Booking getBookingById(int id); // Read
     List<Booking> getAllBookings(); // Read all
     List<Booking> getBookingsByCustomerId(int customerId); // Read by customer

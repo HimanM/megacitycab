@@ -12,5 +12,5 @@ public interface UserDAO {
     boolean deleteUser(int id);
     User getUserByEmail(String email);
     User getUserById(int customerId);
-    boolean getUserByNic(String nic);
+    User getUserByNic(String nic);
 }

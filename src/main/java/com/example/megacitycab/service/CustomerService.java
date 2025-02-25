@@ -28,6 +28,9 @@ public class CustomerService {
             if (UserDAO.getUserByEmail(customer.getEmail()) != null) {
                 throw new CustomerException("Email is already registered");
             }
+            if (UserDAO.getUserByNic(customer.getNic()) != null){
+                throw new CustomerException("NIC is already registered");
+            }
             userId = UserDAO.addUser(customer);
         } catch (Exception e) {
             throw new CustomerException("Error while registering customer", e);
@@ -102,7 +105,7 @@ public class CustomerService {
 
     public boolean isNicAlreadyRegistered(String nic) throws CustomerException {
         try {
-            return UserDAO.getUserByNic(nic);
+            return UserDAO.getUserByNic(nic) != null;
         }
         catch (Exception e) {
             throw new CustomerException("Error while checking NIC registration", e);
