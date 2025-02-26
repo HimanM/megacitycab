@@ -82,7 +82,7 @@ public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public List<Driver> getUnverifiedDrivers() {
-        String query = "SELECT * FROM drivers WHERE verified = No";
+        String query = "SELECT * FROM drivers WHERE verified = 'No'";
         List<Driver> drivers = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
