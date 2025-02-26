@@ -16,7 +16,7 @@
 <div class="container mt-5">
     <h2 class="text-center">Help & Guidelines</h2>
     <div class="card shadow-sm p-4">
-        <h4>General Help for New Users</h4>
+        <h4>General Help for Users</h4>
         <ul>
             <li><strong>Login:</strong> Enter your username and password to access the system.</li>
             <li><strong>Book a Ride:</strong> Provide details like name, address, and destination.</li>
@@ -32,10 +32,8 @@
         <hr>
         <h4>Additional Help for Customers</h4>
         <ul>
-            <li><strong>Track Your Ride:</strong> View driver details and estimated arrival time.</li>
+            <li><strong>Track Your Ride:</strong> View driver details and fare.</li>
             <li><strong>Cancel Bookings:</strong> Cancel rides before pickup.</li>
-            <li><strong>Payment Methods:</strong> Pay via credit card, cash, or wallet.</li>
-            <li><strong>Support:</strong> Contact customer support for disputes or issues.</li>
         </ul>
         <% } %>
 
@@ -45,9 +43,7 @@
         <h4>Additional Help for Drivers</h4>
         <ul>
             <li><strong>Accept Rides:</strong> View and accept ride requests.</li>
-            <li><strong>Navigate:</strong> Use the in-app navigation for the best routes.</li>
-            <li><strong>Earnings:</strong> Track your daily and weekly earnings.</li>
-            <li><strong>Customer Ratings:</strong> Maintain a high rating for better trip assignments.</li>
+            <li><strong>Cannot Accept Rides?:</strong> Your driver record is not yet approved.</li>
         </ul>
         <% } %>
 
@@ -57,9 +53,8 @@
         <h4>Additional Help for Admins</h4>
         <ul>
             <li><strong>Manage Users:</strong> Add, remove, or update customer and driver profiles.</li>
-            <li><strong>Monitor Rides:</strong> View real-time ride status and reports.</li>
-            <li><strong>Billing:</strong> Generate invoices and process payments.</li>
-            <li><strong>System Settings:</strong> Configure app settings and operational rules.</li>
+            <li><strong>Monitor Vehicles:</strong> View and update vehicle information.</li>
+            <li><strong>Payments:</strong> View Payment History.</li>
         </ul>
         <% } %>
 
