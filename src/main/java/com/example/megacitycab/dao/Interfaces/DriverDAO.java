@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface DriverDAO {
     boolean addDriver(Driver driver);
-    User getDriverById(int driverId);
+    Integer getDriverUserIdById(int driverId);
+    Driver getDriverById(int driverId);
     List<Driver> getAllDrivers();
     boolean updateDriver(Driver driver);
     boolean deleteDriver(int driverId);
@@ -15,6 +16,5 @@ public interface DriverDAO {
     Integer getDriverIdByUserId(Integer userId);
     List<Driver> getUnverifiedDrivers();
     void releaseDriver(int driverId);
-    boolean acceptBooking(int driverId, int bookingId);
     int getAndAssignAvailableDriver(int driverId);
 }

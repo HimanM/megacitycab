@@ -4,7 +4,7 @@ import com.example.megacitycab.model.Vehicle;
 import java.util.List;
 
 public interface VehicleDAO {
-    boolean addVehicle(Vehicle vehicle);
+    int addVehicle(Vehicle vehicle);
     Vehicle getVehicleById(int vehicleId);
     List<Vehicle> getAllVehicles();
     boolean updateVehicle(Vehicle vehicle);

@@ -4,16 +4,17 @@ import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.Interfaces.VehicleDAO;
 import com.example.megacitycab.model.Vehicle;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
 public class VehicleDAOImpl implements VehicleDAO {
     @Override
-    public boolean addVehicle(Vehicle vehicle) {
+    public int addVehicle(Vehicle vehicle) {
         String query = "INSERT INTO vehicles (vehicle_type, model, manufacturer, year, capacity, license_plate, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, vehicle.getVehicleType());
             statement.setString(2, vehicle.getModel());
@@ -23,11 +24,21 @@ public class VehicleDAOImpl implements VehicleDAO {
             statement.setString(6, vehicle.getLicensePlate());
             statement.setTimestamp(7, Timestamp.valueOf(vehicle.getCreatedAt()));
 
-            return statement.executeUpdate() > 0;
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1); // Return the vehicle ID
+                    }
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+
+        return -1; // Return -1 if insertion fails
     }
 
     @Override
@@ -39,7 +50,7 @@ public class VehicleDAOImpl implements VehicleDAO {
             statement.setInt(1, vehicleId);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new Vehicle(
+                    Vehicle vehicle = new Vehicle(
                             rs.getInt("id"),
                             rs.getString("vehicle_type"),
                             rs.getString("model"),
@@ -48,6 +59,8 @@ public class VehicleDAOImpl implements VehicleDAO {
                             rs.getInt("year"),
                             rs.getInt("capacity")
                     );
+                    vehicle.setStatus(rs.getString("status"));
+                    return vehicle;
                 }
             }
         } catch (SQLException e) {

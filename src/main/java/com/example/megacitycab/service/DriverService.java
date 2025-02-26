@@ -20,6 +20,7 @@ public class DriverService {
     private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
     private static final DriverDAO driverDAO = new DriverDAOImpl();
     private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
+    private static final UserDAO userDAO = new UserDAOImpl();
 
 
     public int getAndAssignAvailableDriver(int driverId) throws DriverException {
@@ -31,14 +32,6 @@ public class DriverService {
         }
     }
 
-    public boolean acceptBooking(int driverId, int bookingId) throws DriverException  {
-        try {
-            return driverDAO.acceptBooking(driverId, bookingId);
-        }
-        catch (Exception e) {
-            throw new DriverException("Error while accepting booking", e);
-        }
-    }
 
     public boolean registerDriver(Driver driver) throws DriverException {
         try {
@@ -58,7 +51,7 @@ public class DriverService {
         }
     }
 
-    public User getDriverById(int driverId) throws DriverException {
+    public Driver getDriverById(int driverId) throws DriverException {
         try {
             return driverDAO.getDriverById(driverId);
         }

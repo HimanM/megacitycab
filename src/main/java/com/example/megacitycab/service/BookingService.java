@@ -253,7 +253,7 @@ public class BookingService {
 
     public User getDriverById(int driverId) throws BookingException {
         try {
-            return driverDAO.getDriverById(driverId);
+            return userDAO.getUserById(driverDAO.getDriverUserIdById(driverId));
         }
         catch (Exception e) {
             throw new BookingException("Error while fetching driver details", e);
