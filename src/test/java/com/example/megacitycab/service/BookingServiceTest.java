@@ -2,6 +2,8 @@ package com.example.megacitycab.service;
 
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.BookingDAOImpl;
+import com.example.megacitycab.dao.DriverDAOImpl;
+import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
 import org.junit.jupiter.api.*;
 
@@ -15,11 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookingServiceTest {
     private static Connection connection;
     private static BookingDAOImpl bookingDAO;
+    private static DriverDAOImpl driverDAO;
     private static int testBookingId;
 
     @BeforeAll
     static void setup() {
         bookingDAO = new BookingDAOImpl();
+        driverDAO = new DriverDAOImpl();
 
         Booking testBooking =  new Booking(0,"ORD-TEST",22, "Destination Details","Pickup Location", LocalDateTime.now(),500.00);
         testBookingId = bookingDAO.addBooking(testBooking).getId();
@@ -60,7 +64,13 @@ class BookingServiceTest {
         Booking deletedBooking = bookingDAO.getBookingById(testBookingId);
         assertNull(deletedBooking);
     }
+    @Test
+    @Order(5)
+    void testGetAndAssignAvailableDriver_noAvailableDriver() {
+        int driverId = driverDAO.getAndAssignAvailableDriver(-1);
+        assertEquals(-1, driverId);
 
+    }
     @AfterAll
     static void cleanupDatabase() throws SQLException {
         connection = DatabaseConnection.getConnection();
