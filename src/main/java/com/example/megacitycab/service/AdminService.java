@@ -39,6 +39,10 @@ public class AdminService {
 
     public void deleteCustomer(int userId) throws AdminException {
         try {
+            Integer driverId = driverDAO.getDriverIdByUserId(userId);
+            if( driverId != -1){
+                driverDAO.deleteDriver(driverId);
+            }
             userDAO.deleteUser(userId); // Delete the user.
         } catch (Exception e) {
             throw new AdminException("Error while deleting customer");
