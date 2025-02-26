@@ -113,4 +113,4 @@ Import the provided database.sql file.
 - **Authentication: Hashed Passwords**
 
 ### 📌 Contributors
-👤 Your Name - Himan Manduja (https://github.com/HimanM)
+👤 Himan Manduja (https://github.com/HimanM)
