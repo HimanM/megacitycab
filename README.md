@@ -106,7 +106,7 @@ Import the provided database.sql file.
 
 ### 🛠️ Technologies Used
 
-- **Backend: Java (Spring Boot)**
+- **Backend: Java (jakarta servlet)**
 - **Database: MySQL**
 - **Server: Apache Tomcat (Locally Hosted)**
 - **Frontend: HTML, CSS, JavaScript**
