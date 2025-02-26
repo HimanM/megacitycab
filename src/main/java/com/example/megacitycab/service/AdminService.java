@@ -32,7 +32,7 @@ public class AdminService {
         try {
             vehicleDAO.addVehicle(vehicle);
         } catch (Exception e) {
-            throw new AdminException("Vehicle already exists");
+            throw new AdminException("Vehicle already exists",e);
         }
 
     }

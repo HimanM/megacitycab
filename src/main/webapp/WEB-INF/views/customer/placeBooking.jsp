@@ -78,7 +78,7 @@
                 <p>You already have an active booking. Please check your dashboard.</p>
             </div>
             <div class="modal-footer">
-                <a href="<%= request.getContextPath() %>/customer/booking/viewBookings" class="btn btn-primary">Go to Dashboard</a>
+                <a href="<%= request.getContextPath() %>/customer/booking/viewBookings" class="btn btn-primary">View Your Bookings</a>
             </div>
         </div>
     </div>

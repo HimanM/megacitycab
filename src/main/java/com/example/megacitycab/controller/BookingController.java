@@ -124,8 +124,6 @@ public class BookingController extends HttpServlet {
             else if (req.getParameter("placeBooking") != null) {
                 if (selectedVehicleIdStr == null || selectedVehicleIdStr.isEmpty()) {
 
-                    System.out.println(selectedVehicleIdStr);
-                    System.out.println("Error here");
                     req.setAttribute("error", "Please select a vehicle.");
                     RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/customer/placeBooking.jsp");
                     dispatcher.forward(req, resp);

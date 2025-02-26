@@ -24,7 +24,25 @@
         <div class="col"><input type="text" name="manufacturer" placeholder="Manufacturer" required class="form-control"></div>
       </div>
       <div class="row mt-2">
-        <div class="col"><input type="text" name="vehicle_type" placeholder="Vehicle Type" required class="form-control"></div>
+        <div class="col">
+          <select name="vehicle_type" required class="form-control">
+            <option value="" disabled selected>Select Vehicle Type</option>
+            <option value="Motorbike">Motorbike</option>
+            <option value="Van">Van</option>
+            <option value="SUV">SUV</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Hatchback">Hatchback</option>
+            <option value="Convertible">Convertible</option>
+            <option value="Coupe">Coupe</option>
+            <option value="Pickup Truck">Pickup Truck</option>
+            <option value="Minivan">Minivan</option>
+            <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Luxury">Luxury</option>
+            <option value="Bus">Bus</option>
+            <option value="Truck">Truck</option>
+          </select>
+        </div>
         <div class="col"><input type="number" name="year" placeholder="Year" required class="form-control"></div>
         <div class="col"><input type="number" name="capacity" placeholder="Seat Capacity" required class="form-control"></div>
       </div>

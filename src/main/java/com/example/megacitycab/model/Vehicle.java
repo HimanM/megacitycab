@@ -11,6 +11,7 @@ public class Vehicle {
     private int capacity;
     private String licensePlate;
     private  LocalDateTime createdAt;
+    private String status;
 
     public Vehicle() {}
 
@@ -88,5 +89,13 @@ public class Vehicle {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
