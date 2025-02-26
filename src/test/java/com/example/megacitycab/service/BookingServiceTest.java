@@ -3,7 +3,6 @@ package com.example.megacitycab.service;
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.BookingDAOImpl;
 import com.example.megacitycab.dao.DriverDAOImpl;
-import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.Booking;
 import org.junit.jupiter.api.*;
 
