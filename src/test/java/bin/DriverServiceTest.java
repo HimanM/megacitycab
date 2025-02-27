@@ -1,6 +1,10 @@
 package bin;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.BookingAssignmentDAOImpl;
+import com.example.megacitycab.dao.BookingDAOImpl;
+import com.example.megacitycab.dao.DriverDAOImpl;
+import com.example.megacitycab.dao.VehicleDAOImpl;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.service.DriverService;
@@ -26,7 +30,7 @@ class DriverServiceTest {
 
     @BeforeAll
     void setup() {
-        driverService = new DriverService();
+        driverService = new DriverService(new BookingDAOImpl(), new BookingAssignmentDAOImpl(),new DriverDAOImpl(), new VehicleDAOImpl());
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             // Insert test driver as a user

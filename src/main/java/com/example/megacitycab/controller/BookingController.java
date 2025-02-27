@@ -1,7 +1,6 @@
 package com.example.megacitycab.controller;
 
 import com.example.megacitycab.dao.*;
-import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.model.*;
 import com.example.megacitycab.model.DTO.RidePayment;
 import com.example.megacitycab.service.*;

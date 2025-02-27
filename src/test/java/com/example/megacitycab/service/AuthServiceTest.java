@@ -1,6 +1,7 @@
 package com.example.megacitycab.service;
 
 import com.example.megacitycab.config.DatabaseConnection;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.dao.UserDAOImpl;
 import com.example.megacitycab.exceptions.AuthException;
 import com.example.megacitycab.model.User;
@@ -17,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthServiceTest {
     private static Connection connection;
     private static UserDAOImpl userDAO;
+    private static AuthService authService = new AuthService(new UserDAOImpl());
+
+
 
     @BeforeAll
     static void setup() {
@@ -31,7 +35,7 @@ class AuthServiceTest {
     @Test
     @Order(1)
     void testAuthenticate_ValidUser() {
-        User user = AuthService.authenticate("testuser", "password123");
+        User user = authService.authenticate("testuser", "password123");
         assertNotNull(user);
         assertEquals("testuser", user.getUsername());
     }
@@ -39,14 +43,14 @@ class AuthServiceTest {
     @Test
     @Order(2)
     void testAuthenticate_InvalidPassword() {
-        User user = AuthService.authenticate("testuser", "wrongPassword");
+        User user = authService.authenticate("testuser", "wrongPassword");
         assertNull(user);
     }
 
     @Test
     @Order(3)
     void testAuthenticate_NonExistentUser() {
-        User user = AuthService.authenticate("unknownUser", "password123");
+        User user = authService.authenticate("unknownUser", "password123");
         assertNull(user);
     }
 

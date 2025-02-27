@@ -26,7 +26,7 @@ class CustomerServiceTest {
     @BeforeAll
     static void setup() throws InterruptedException {
         userDAO = new UserDAOImpl();
-        customerService = new CustomerService();
+        customerService = new CustomerService(new UserDAOImpl());
         User testUser = new User(0, "testcustomer", "password123", "Test User",
                 "customer@example.com", "123 Test Street", "123456789V", "0712345678",
                 "customer", LocalDateTime.now());

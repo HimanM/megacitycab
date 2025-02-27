@@ -26,9 +26,13 @@ class AdminServiceTest {
     private static int testVehicleId;
     private static int testDriverUserId;
 
+    public AdminServiceTest(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
     @BeforeAll
     static void setup() {
-        adminService = new AdminService();
+
         try (Connection connection = DatabaseConnection.getConnection()) {
 
             // Insert test user
