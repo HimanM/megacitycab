@@ -1,5 +1,7 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.*;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.model.*;
 import com.example.megacitycab.model.DTO.RidePayment;
 import com.example.megacitycab.service.*;
@@ -18,8 +20,18 @@ import java.util.List;
 
 @WebServlet("/customer/*")
 public class BookingController extends HttpServlet {
-    private final BookingService bookingService = new BookingService();
+    private final BookingService bookingService;
     private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
+
+    // Constructor for dependency injection
+    public BookingController(BookingService bookingService, AuthService authService, DriverService driverService) {
+        this.bookingService = bookingService;
+
+    }
+    // Default constructor (for servlet container)
+    public BookingController() {
+        this.bookingService = new BookingService(new BookingDAOImpl(), new UserDAOImpl(), new BookingAssignmentDAOImpl(), new DriverDAOImpl(), new PaymentDAOImpl(), new VehicleDAOImpl());
+    }
 
 
     @Override

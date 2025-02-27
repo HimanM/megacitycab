@@ -1,5 +1,6 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.*;
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
 import com.example.megacitycab.model.DTO.BookingDetails;
@@ -19,9 +20,9 @@ import java.util.List;
 
 @WebServlet("/driver/dashboard/*")
 public class DriverController extends HttpServlet {
-    private final DriverService driverService = new DriverService();
+    private final DriverService driverService = new DriverService(new BookingDAOImpl(), new BookingAssignmentDAOImpl(),new DriverDAOImpl(), new VehicleDAOImpl());;
     private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
-    private final BookingService bookingService = new BookingService();
+    private final BookingService bookingService = new BookingService(new BookingDAOImpl(), new UserDAOImpl(), new BookingAssignmentDAOImpl(), new DriverDAOImpl(), new PaymentDAOImpl(), new VehicleDAOImpl());;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

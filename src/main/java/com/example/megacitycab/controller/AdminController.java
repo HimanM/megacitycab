@@ -1,5 +1,6 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.*;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.Payment;
 import com.example.megacitycab.model.User;
@@ -20,7 +21,15 @@ import java.util.List;
 @WebServlet("/admin/dashboard/*")
 public class AdminController extends HttpServlet {
     private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
-    private final AdminService adminService = new AdminService();
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
+    // Default constructor
+    public AdminController(){
+        this.adminService = new AdminService(new UserDAOImpl(), new RideDAOImpl(), new DriverDAOImpl(), new PaymentDAOImpl(), new VehicleDAOImpl());
+    }
 
 
     @Override

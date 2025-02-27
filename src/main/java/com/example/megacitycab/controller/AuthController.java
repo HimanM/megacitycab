@@ -1,11 +1,13 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.*;
 import com.example.megacitycab.dao.Interfaces.DriverDAO;
-import com.example.megacitycab.dao.DriverDAOImpl;
+import com.example.megacitycab.dao.Interfaces.UserDAO;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.service.AuthService;
 import com.example.megacitycab.service.CustomerService;
+import com.example.megacitycab.service.DriverService;
 import com.example.megacitycab.util.ValidationUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -23,15 +25,29 @@ import java.util.List;
 
 @WebServlet("/auth/*")
 public class AuthController extends HttpServlet {
-    private CustomerService customerService;
+    private final CustomerService customerService;
+    private final AuthService authService;
+    private final DriverService driverService;
 
-    DriverDAO driverDAO = new DriverDAOImpl(); // Default implementation
-
-
-    @Override
-    public void init() {
-        customerService = new CustomerService();
+    // Constructor for dependency injection
+    public AuthController(CustomerService customerService, AuthService authService, DriverService driverService) {
+        this.customerService = customerService;
+        this.authService = authService;
+        this.driverService = driverService;
     }
+
+    // Default constructor (for servlet container)
+    public AuthController() {
+        UserDAO userDAO = new UserDAOImpl();
+        AuthService authService = new AuthService(userDAO);
+        CustomerService customerService = new CustomerService(new UserDAOImpl());
+        DriverService driverService = new DriverService(new BookingDAOImpl(), new BookingAssignmentDAOImpl(), new DriverDAOImpl(), new VehicleDAOImpl());
+
+        this.customerService = customerService;
+        this.authService = authService;
+        this.driverService = driverService;
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -80,7 +96,7 @@ public class AuthController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        User customer = AuthService.authenticate(username, password);
+        User customer = authService.authenticate(username, password);
 
         //admin login integration here
 
@@ -171,7 +187,7 @@ public class AuthController extends HttpServlet {
                     driver.setLicenseNumber(licenseNumber);
                     driver.setCreatedAt(java.time.LocalDateTime.now());
 
-                    boolean driverRegistered = driverDAO.addDriver(driver);
+                    boolean driverRegistered = driverService.registerDriver(driver);
                     System.out.println("Driver registered: " + driverRegistered);
                     if (driverRegistered) {
                         resp.sendRedirect(req.getContextPath() + "/auth/login");  // Redirect to login
