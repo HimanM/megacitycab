@@ -1,56 +1,53 @@
 package com.example.megacitycab.config;
 
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Base64;
+
 
 public class DatabaseConnection {
-
-    private static final String SERVER_NAME = "Himan\\SQLEXPRESS"; // Replace with your server name or IP address if different
+    private static final String SERVER_NAME = "Himan\\SQLEXPRESS";
     private static final String DATABASE_NAME = "MegaCityCab";
     private static final String USERNAME = "MegaCity";
     private static final String PASSWORD = "test";
 
-    public static Connection getConnection() throws SQLException {
-        String url = String.format("jdbc:sqlserver://%s;databaseName=%s;user=%s;password=%s;encrypt=true;trustServerCertificate=true;",
-                SERVER_NAME, DATABASE_NAME, USERNAME, PASSWORD);
+    private static DatabaseConnection instance;
+    private Connection connection;
 
+    private DatabaseConnection() {
         try {
+            String url = "jdbc:sqlserver://" + SERVER_NAME + ";databaseName=" + DATABASE_NAME +
+                    ";encrypt=true;trustServerCertificate=true;keepAlive=true;";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("SQL Server Driver not found!");
+            this.connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
+            this.connection.setAutoCommit(true);
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            return null;
-        }
-
-        try {
-            Connection connection = DriverManager.getConnection(url);
-            System.out.println("Connection successful!");
-            return connection;
-        } catch (SQLException e) {
-            System.err.println("Database connection error: " + e.getMessage());
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Database connection failed!");
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            if (connection != null) {
-                // Use the connection here
-            } else {
-                System.out.println("Failed to get connection.");
-            }
+    public static synchronized DatabaseConnection getInstance() {
+        if (instance == null || instance.connection == null || isConnectionClosed(instance.connection)) {
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+
+    public static Connection getConnection() {
+        if (isConnectionClosed(getInstance().connection)) {
+            instance = new DatabaseConnection();  // Force reconnection
+        }
+        return instance.connection;
+    }
+
+    private static boolean isConnectionClosed(Connection conn) {
+        try {
+            return conn == null || conn.isClosed() || !conn.isValid(2);  // Check validity within 2 seconds
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
         }
     }
 }
