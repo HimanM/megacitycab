@@ -12,12 +12,21 @@ import java.util.Random;
 
 public class BookingService {
 
-    private static final BookingDAO bookingDAO = new BookingDAOImpl();;
-    private static final UserDAO userDAO = new UserDAOImpl();
-    private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
-    private static final DriverDAO driverDAO = new DriverDAOImpl();
-    private static final PaymentDAO paymentDAO = new PaymentDAOImpl();
-    private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
+    private final BookingDAO bookingDAO;;
+    private final UserDAO userDAO;
+    private final BookingAssignmentDAO bookingAssignmentDAO;
+    private final DriverDAO driverDAO;
+    private final PaymentDAO paymentDAO;
+    private  final VehicleDAO vehicleDAO;
+
+    public BookingService(BookingDAO bookingDAO, UserDAO userDAO, BookingAssignmentDAO bookingAssignmentDAO, DriverDAO driverDAO, PaymentDAO paymentDAO, VehicleDAO vehicleDAO) {
+        this.bookingDAO = bookingDAO;
+        this.userDAO = userDAO;
+        this.bookingAssignmentDAO = bookingAssignmentDAO;
+        this.driverDAO = driverDAO;
+        this.paymentDAO = paymentDAO;
+        this.vehicleDAO = vehicleDAO;
+    }
 
 
     // Create a booking

@@ -16,12 +16,17 @@ import java.util.List;
 
 public class DriverService {
 
-    private final BookingDAO bookingDAO = new BookingDAOImpl();
-    private static final BookingAssignmentDAO bookingAssignmentDAO = new BookingAssignmentDAOImpl();
-    private static final DriverDAO driverDAO = new DriverDAOImpl();
-    private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
-    private static final UserDAO userDAO = new UserDAOImpl();
+    private final BookingDAO bookingDAO;
+    private final BookingAssignmentDAO bookingAssignmentDAO;
+    private final DriverDAO driverDAO;
+    private final VehicleDAO vehicleDAO;
 
+    public DriverService(BookingDAO bookingDAO, BookingAssignmentDAO bookingAssignmentDAO, DriverDAO driverDAO, VehicleDAO vehicleDAO) {
+        this.bookingDAO = bookingDAO;
+        this.bookingAssignmentDAO = bookingAssignmentDAO;
+        this.driverDAO = driverDAO;
+        this.vehicleDAO = vehicleDAO;
+    }
 
     public int getAndAssignAvailableDriver(int driverId) throws DriverException {
         try {

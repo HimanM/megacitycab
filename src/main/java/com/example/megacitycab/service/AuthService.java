@@ -16,9 +16,14 @@ import java.sql.SQLException;
 import static com.example.megacitycab.util.HashPassword.hashPassword;
 
 public class AuthService {
-    private static final UserDAO userDAO = new UserDAOImpl();
+    private final UserDAO userDAO;
 
-    public static User authenticate(String username, String password) {
+    public AuthService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+
+    public User authenticate(String username, String password) {
         try {
             User user = userDAO.getUserByUsername(username);
             if (user != null && verifyPassword(username, password)) {

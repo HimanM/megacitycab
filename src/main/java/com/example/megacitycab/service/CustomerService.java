@@ -10,13 +10,10 @@ import java.util.List;
 public class CustomerService {
     private final UserDAO UserDAO;
 
-    public CustomerService() {
-        this.UserDAO = new UserDAOImpl(); // Use dependency injection if needed
+    public CustomerService(UserDAO userDAO) {
+        this.UserDAO = userDAO;
     }
 
-    public CustomerService(UserDAO UserDAO) {
-        this.UserDAO = UserDAO;
-    }
 
     // Register a new customer
     public int registerCustomer(User customer) throws CustomerException {

@@ -143,7 +143,6 @@ public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public Integer getDriverUserIdById(int driverId) {
-        final CustomerService userService = new CustomerService();
         String query = "SELECT user_id FROM drivers WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

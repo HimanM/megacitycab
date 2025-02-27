@@ -5,7 +5,6 @@
     String messageType = (String) request.getAttribute("messageType"); // "success" or "error"
     String messageText = (String) request.getAttribute("messageText"); // Message details
     String buttonLink = (String) request.getAttribute("buttonLink"); // Redirect link
-    System.out.println("messageType: " + messageType + ", messageText: " + messageText + ", buttonLink: " + buttonLink);
     boolean showPopup = messageType != null && messageText != null && buttonLink != null;
 %>
 

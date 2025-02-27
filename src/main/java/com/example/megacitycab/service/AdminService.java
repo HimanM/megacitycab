@@ -12,11 +12,19 @@ import com.example.megacitycab.model.Vehicle;
 import java.util.List;
 
 public class AdminService {
-    private static final UserDAO userDAO = new UserDAOImpl();
-    private static final RideDAO rideDAO = new RideDAOImpl();
-    private static final DriverDAO driverDAO = new DriverDAOImpl();
-    private static final PaymentDAO paymentDAO = new PaymentDAOImpl();
-    private static final VehicleDAO vehicleDAO = new VehicleDAOImpl();
+    private final UserDAO userDAO;
+    private final RideDAO rideDAO;
+    private final DriverDAO driverDAO;
+    private final PaymentDAO paymentDAO;
+    private final VehicleDAO vehicleDAO;
+
+    public AdminService(UserDAO userDAO, RideDAO rideDAO, DriverDAO driverDAO, PaymentDAO paymentDAO, VehicleDAO vehicleDAO) {
+        this.userDAO = userDAO;
+        this.rideDAO = rideDAO;
+        this.driverDAO = driverDAO;
+        this.paymentDAO = paymentDAO;
+        this.vehicleDAO = vehicleDAO;
+    }
 
 
     public boolean updateVehicleStatus(Integer vehicleId, String newStatus) throws AdminException {

@@ -1,5 +1,6 @@
 package com.example.megacitycab.controller;
 
+import com.example.megacitycab.dao.UserDAOImpl;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.service.CustomerService;
 import com.example.megacitycab.util.HashPassword;
@@ -19,7 +20,17 @@ import static com.example.megacitycab.util.HashPassword.hashPassword;
 public class UserController extends HttpServlet {
 
 
-    private final CustomerService userService = new CustomerService();
+    private final CustomerService userService;
+
+    // Constructor for dependency injection
+    public UserController(CustomerService userService) {
+        this.userService = userService;
+    }
+
+    // Default constructor (for servlet container)
+    public UserController(){
+        this.userService = new CustomerService(new UserDAOImpl());
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -49,7 +60,6 @@ public class UserController extends HttpServlet {
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirm-password");
 
-            System.out.println("Password: " + password);
 
             // Validate user input
             if (email == null || email.isEmpty() || phoneNumber == null || phoneNumber.isEmpty()) {
