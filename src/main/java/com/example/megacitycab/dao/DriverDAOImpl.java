@@ -82,7 +82,7 @@ public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public List<Driver> getUnverifiedDrivers() {
-        String query = "SELECT * FROM drivers WHERE verified = 'No'";
+        String query = "SELECT d.*, u.name as name, u.phone as phone FROM drivers d JOIN users u ON d.user_id = u.id WHERE verified = 'No'";
         List<Driver> drivers = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -162,7 +162,7 @@ public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public Driver getDriverById(int driverId) {
-        String query = "SELECT * FROM drivers WHERE id = ?";
+        String query = "SELECT d.*, u.name as name, u.phone as phone FROM drivers d JOIN users u ON d.user_id = u.id  WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -179,7 +179,7 @@ public class DriverDAOImpl implements DriverDAO {
 
     @Override
     public List<Driver> getAllDrivers() {
-        String query = "SELECT * FROM drivers";
+        String query = "SELECT d.*, u.name as name, u.phone as phone FROM drivers d JOIN users u ON d.user_id = u.id";
         List<Driver> drivers = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -202,13 +202,10 @@ public class DriverDAOImpl implements DriverDAO {
 
 
     private Driver mapDriver(ResultSet resultSet) throws SQLException {
-        UserDAOImpl userDAO = new UserDAOImpl();
 
         Driver driver = new Driver();
-        User user = new User();
-        user = userDAO.getUserById(resultSet.getInt("user_id"));
-        driver.setName(user.getName());
-        driver.setPhoneNumber(user.getPhone());
+        driver.setName(resultSet.getString("name"));
+        driver.setPhoneNumber(resultSet.getString("phone"));
         driver.setId(resultSet.getInt("id"));
         driver.setUserId(resultSet.getInt("user_id"));
         driver.setLicenseNumber(resultSet.getString("license_number"));

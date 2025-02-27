@@ -3,6 +3,7 @@ package com.example.megacitycab.controller;
 import com.example.megacitycab.model.*;
 import com.example.megacitycab.model.DTO.RidePayment;
 import com.example.megacitycab.service.*;
+import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ import java.util.List;
 @WebServlet("/customer/*")
 public class BookingController extends HttpServlet {
     private final BookingService bookingService = new BookingService();
+    private final MessageBoxUtil messageBoxUtil = new MessageBoxUtil();
 
 
     @Override
@@ -253,7 +255,7 @@ public class BookingController extends HttpServlet {
         Assignment assignment = bookingService.getAssignmentByBookingId(bookingId);
 
         int userId = (int) req.getSession().getAttribute("userId");
-        if (booking == null || !(booking.getCustomerId() == userId)) {
+        if (booking == null || !(booking.getCustomerId() == userId) || booking.getOrderNumber() == null) {
             resp.sendRedirect(req.getContextPath() + "/customer/booking/viewBookings");
             return;
         }
@@ -268,6 +270,11 @@ public class BookingController extends HttpServlet {
             req.setAttribute("driverPhone", driver.getPhone());
             req.setAttribute("vehicle", vehicle.getManufacturer() + " " + vehicle.getModel() + " Plate No:" +vehicle.getLicensePlate());
             req.setAttribute("booking", booking);
+        }
+        else {
+            messageBoxUtil.displayMessageBox(req,"error","Error 505 no record found","viewBookings");
+            resp.sendRedirect(req.getContextPath() + "/customer/booking/viewBookings");
+            return;
         }
 
         req.getRequestDispatcher("/WEB-INF/views/customer/bookingDetails.jsp").forward(req, resp);
