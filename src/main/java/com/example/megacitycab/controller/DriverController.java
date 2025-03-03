@@ -3,7 +3,7 @@ package com.example.megacitycab.controller;
 import com.example.megacitycab.dao.*;
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.DTO.BookingDetails;
+import com.example.megacitycab.DTO.BookingDetails;
 import com.example.megacitycab.service.BookingService;
 import com.example.megacitycab.service.DriverService;
 import com.example.megacitycab.util.MessageBoxUtil;

@@ -1,6 +1,6 @@
 package com.example.megacitycab.dao.Interfaces;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.DTO.BookingDetails;
+import com.example.megacitycab.DTO.BookingDetails;
 
 import java.util.List;
 

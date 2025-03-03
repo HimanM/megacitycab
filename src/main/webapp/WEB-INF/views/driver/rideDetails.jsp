@@ -1,5 +1,5 @@
 <%@ page import="com.example.megacitycab.model.Booking" %>
-<%@ page import="com.example.megacitycab.model.DTO.BookingDetails" %>
+<%@ page import="com.example.megacitycab.DTO.BookingDetails" %>
 <%@ page import="com.example.megacitycab.model.Vehicle" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

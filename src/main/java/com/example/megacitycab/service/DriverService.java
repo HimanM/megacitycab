@@ -2,14 +2,12 @@ package com.example.megacitycab.service;
 
 
 
-import com.example.megacitycab.dao.*;
 import com.example.megacitycab.dao.Interfaces.*;
 import com.example.megacitycab.exceptions.DriverException;
 import com.example.megacitycab.model.Assignment;
 import com.example.megacitycab.model.Booking;
-import com.example.megacitycab.model.DTO.BookingDetails;
+import com.example.megacitycab.DTO.BookingDetails;
 import com.example.megacitycab.model.Driver;
-import com.example.megacitycab.model.User;
 
 
 import java.util.List;

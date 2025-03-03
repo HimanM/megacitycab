@@ -1,4 +1,4 @@
-package com.example.megacitycab.model.DTO;
+package com.example.megacitycab.DTO;
 
 public class RidePayment {
     private double totalAfterTax;

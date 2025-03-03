@@ -1,4 +1,4 @@
-package com.example.megacitycab.model.DTO;
+package com.example.megacitycab.DTO;
 
 import java.sql.Date;
 import java.sql.Timestamp;

@@ -1,11 +1,10 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.*;
 import com.example.megacitycab.dao.Interfaces.*;
 import com.example.megacitycab.exceptions.BookingException;
 import com.example.megacitycab.model.*;
-import com.example.megacitycab.model.DTO.BookingDetails;
-import com.example.megacitycab.model.DTO.RidePayment;
+import com.example.megacitycab.DTO.BookingDetails;
+import com.example.megacitycab.DTO.RidePayment;
 
 import java.util.List;
 import java.util.Random;

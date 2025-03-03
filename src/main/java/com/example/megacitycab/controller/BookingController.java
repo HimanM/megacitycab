@@ -2,7 +2,7 @@ package com.example.megacitycab.controller;
 
 import com.example.megacitycab.dao.*;
 import com.example.megacitycab.model.*;
-import com.example.megacitycab.model.DTO.RidePayment;
+import com.example.megacitycab.DTO.RidePayment;
 import com.example.megacitycab.service.*;
 import com.example.megacitycab.util.MessageBoxUtil;
 import jakarta.servlet.RequestDispatcher;

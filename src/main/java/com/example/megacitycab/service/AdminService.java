@@ -1,9 +1,8 @@
 package com.example.megacitycab.service;
 
-import com.example.megacitycab.dao.*;
 import com.example.megacitycab.dao.Interfaces.*;
 import com.example.megacitycab.exceptions.AdminException;
-import com.example.megacitycab.model.DTO.Ride;
+import com.example.megacitycab.DTO.Ride;
 import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.Payment;
 import com.example.megacitycab.model.User;

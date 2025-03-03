@@ -5,7 +5,7 @@ import com.example.megacitycab.model.Driver;
 import com.example.megacitycab.model.Payment;
 import com.example.megacitycab.model.User;
 import com.example.megacitycab.model.Vehicle;
-import com.example.megacitycab.model.DTO.Ride;
+import com.example.megacitycab.DTO.Ride;
 import com.example.megacitycab.service.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;

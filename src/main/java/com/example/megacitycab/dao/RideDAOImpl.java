@@ -2,7 +2,7 @@ package com.example.megacitycab.dao;
 
 import com.example.megacitycab.config.DatabaseConnection;
 import com.example.megacitycab.dao.Interfaces.RideDAO;
-import com.example.megacitycab.model.DTO.Ride;
+import com.example.megacitycab.DTO.Ride;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
